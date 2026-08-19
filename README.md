@@ -60,6 +60,9 @@ This is the core feature that sets GlowGuide apart. The AI Chatbot does not just
 
 ## Project information
 Class: AI66A
+
 Discipline: Web Design
+
 Group: 3
+
 Members: Le Ngoc Anh Thu, Nguyen Ngan An, Dao Ngoc Hien, Nguyen Truong Thanh Toan
