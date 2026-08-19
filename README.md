@@ -33,10 +33,25 @@ The website is not only a product directory. It is also a decision-support platf
 
 ### 2. AI Chatbot – Virtual Skincare Consultant
 This is the core feature that sets GlowGuide apart. The AI Chatbot does not just answer based on pre-written scripts but operates flexibly based on a vast database of cosmetics on the market:
-*   **Comprehensive knowledge:** Can consult on products that are already available or *not yet updated* on the website.
-*   **Proactive interaction (Follow-up Questions):** If the user asks a general question, the AI will proactively ask follow-up questions to gather more information. 
+*   **Comprehensive knowledge:** Can either consult on products that are already available or *not yet updated* on the website. The chatbot can use publicly available information to provide a preliminary analysis. If the available information is incomplete or unreliable, the chatbot should clearly communicate its limitations instead of presenting an overly confident conclusion.
+    *    *Example:* “I could not find the complete ingredient list for this product. Please upload a photo of the back of the packaging or copy the Ingredients section so I can provide a more accurate analysis.” 
+*   **Proactive interaction (Follow-up Questions):** When a user's question is unclear, the AI chatbot will proactively ask follow-up questions in order to clarify the user's needs before making a recommendation.
     *   *Example:* Customer asks *"Can I use ABC brand for oily skin?"*, the AI will reply *"Which specific ABC product line are you interested in? Do you currently have inflammatory acne?"* to provide the most practical advice.
-*   **Flexible analysis & recommendations:** Warns about the risk of irritation or pore-clogging if the product inquired about is unsuitable for the current skin condition, while automatically recommending more optimal alternative products available on the platform.
+*   **Flexible analysis & recommendations:** Warns about the risk of irritation or pore-clogging if the product inquired about is unsuitable for the current skin condition, while automatically recommending more optimal alternative products available on the platform but not solely prioritizing a product only because it has an affiliate link.
+
+#### AI Consultation Principles
+The chatbot should be designed according to the following principles:
+* Prioritize information from reliable and verifiable sources.
+* Distinguish between information provided by brands, user reviews, and analytical recommendations.
+* Avoid claiming that a product can definitely cure a skin condition.
+* Clearly state that the chatbot does not replace a professional diagnosis or medical treatment.
+* Explain that individual experiences may vary.
+* Recommend patch testing when appropriate, especially before applying a new product to the entire face.
+* Warn users about possible irritation or conflicts between certain active ingredients.
+* Ask follow-up questions when the user's information is insufficient.
+* Explain answers in clear and accessible language.
+* Avoid excessive use of technical terminology.
+* Do not prioritize a product solely because it has an affiliate link.
 
 #### Interactive Demo (AI Chatbot Sample)
 
@@ -47,8 +62,12 @@ This is the core feature that sets GlowGuide apart. The AI Chatbot does not just
 *If you need a lightweight hydrating moisturizer, I recommend checking out the **CeraVe PM Facial Moisturizing Lotion**, or gel-based products like **La Roche-Posay Effaclar Mat**. Would you like to see the detailed ingredients for these products?"*
 
 ### 3. Affiliate Marketing Integration
-*   Provides direct purchasing links (Affiliate Links) to official stores on e-commerce platforms (Shopee Mall, Lazada Mall, TikTok Shop, etc.).
-*   Helps users easily compare prices and make purchasing decisions right after receiving useful consultation.
+GlowGuide may provide purchasing links to partner e-commerce platforms or official brand websites. On each product page, users may be able to view:
+* Detailed ingredient list information.
+* Suitable skin conditions.
+* A button linking to the purchasing page.
+
+The website should clearly disclose that some links may be affiliate links. This transparency helps users understand that the website may receive a commission when a purchase is made through an affiliate link. However, product evaluations and suitability recommendations should remain independent and focused on the user's needs.
 
 ---
 
