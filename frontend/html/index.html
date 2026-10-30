@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>GlowGuide | Smart Skincare Search</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/auth.css">
+    <script src="../js/auth.js" defer></script>
+    <script src="../js/cart.js" defer></script>
+    <script src="../js/main.js" defer></script>
+</head>
+
+<body>
+    <header class="navbar">
+        <a href="index.html" class="logo">GlowGuide </a>
+
+        <nav>
+        <a href="index.html">Home</a>
+        <a href="products.html">Products</a>
+        <a href="skin_quiz.html">Skin Quiz</a>
+        <a href="ai_consultant.html">AI Consultant</a>
+                    <a href="cart.html">Cart</a>
+                    <span id="accountArea"><a href="login.html">Login / Sign Up</a></span>
+        </nav>
+    </header>
+
+
+    <!-- ==================== MAIN ==================== -->
+    <main>
+
+        <!-- HERO -->
+        <section class="hero">
+
+            <div class="hero-content">
+
+                <p class="hero-label">
+                    Smart Skincare Discovery
+                </p>
+
+                <h1>
+                    Find skincare that truly fits your skin.
+                </h1>
+
+                <p>
+                    Search skincare products, understand ingredients,
+                    and discover products based on your skin type
+                    and concerns.
+                </p>
+
+                <div class="search-box">
+                    <input
+                        type="search"
+                        placeholder="Search products, brands or ingredients..."
+                    >
+
+                    <button type="button">
+                        Search
+                    </button>
+                </div>
+
+                <div class="hero-actions">
+
+                    <a href="skin_quiz.html">
+                        Find My Match
+                    </a>
+
+                    <a href="ai_consultant.html">
+                        Ask GlowGuide AI
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==================== SKIN MATCH ==================== -->
+        <section class="skin-match" id="skin-match">
+
+            <div class="section-heading">
+                <p>Personalized for you</p>
+
+                <h2>
+                    Find your skincare match
+                </h2>
+
+                <p>
+                    Tell us about your skin and we'll help you
+                    discover suitable products.
+                </p>
+            </div>
+
+
+            <!-- Skin Type -->
+            <div class="skin-type">
+
+                <h3>1. What's your skin type?</h3>
+
+                <div class="skin-options">
+
+                    <button type="button" data-skin="oily">
+                        Oily
+                    </button>
+
+                    <button type="button" data-skin="dry">
+                        Dry
+                    </button>
+
+                    <button type="button" data-skin="combination">
+                        Combination
+                    </button>
+
+                    <button type="button" data-skin="normal">
+                        Normal
+                    </button>
+
+                    <button type="button" data-skin="sensitive">
+                        Sensitive
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- Skin Concerns -->
+            <div class="skin-concerns">
+
+                <h3>2. What are your main skin concerns?</h3>
+
+                <div class="concern-options">
+
+                    <button type="button" data-concern="acne">
+                        Acne
+                    </button>
+
+                    <button type="button" data-concern="dark-spots">
+                        Dark Spots
+                    </button>
+
+                    <button type="button" data-concern="large-pores">
+                        Large Pores
+                    </button>
+
+                    <button type="button" data-concern="dryness">
+                        Dehydration
+                    </button>
+
+                    <button type="button" data-concern="aging">
+                        Aging
+                    </button>
+
+                    <button type="button" data-concern="barrier">
+                        Skin Barrier
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <button type="button" id="findMyProducts" class="match-btn">
+                Find My Products
+            </button>
+
+        </section>
+
+
+        <!-- ==================== FEATURED PRODUCTS ==================== -->
+        <section class="featured-products">
+
+            <div class="section-heading">
+
+                <p>Popular choices</p>
+
+                <h2>
+                    Featured Products
+                </h2>
+
+                <p>
+                    Explore skincare products selected by GlowGuide.
+                </p>
+
+            </div>
+
+
+            <div class="product-list">
+
+                <!-- Product 1 -->
+                <article class="product-card">
+
+                    <div class="product-image">
+                        Product Image
+                    </div>
+
+                    <p class="product-brand">
+                        CeraVe
+                    </p>
+
+                    <h3>
+                        Foaming Facial Cleanser
+                    </h3>
+
+                    <p>
+                        Oily • Combination • Acne-prone
+                    </p>
+
+                    <a href="product_detail.html?id=1">
+                        View Analysis
+                    </a>
+                    <a href="ai_consultant.html?product=1" class="home-ai-link">
+                        Ask AI
+                    </a>
+                    <button type="button" class="home-cart-btn" data-product-id="1" aria-pressed="false">
+                        Add to Cart
+                    </button>
+
+                </article>
+
+
+                <!-- Product 2 -->
+                <article class="product-card">
+
+                    <div class="product-image">
+                        Product Image
+                    </div>
+
+                    <p class="product-brand">
+                        Bioderma
+                    </p>
+
+                    <h3>
+                        Sensibio H2O
+                    </h3>
+
+                    <p>
+                        Oily • Acne-prone
+                    </p>
+
+                    <a href="product_detail.html?id=2">
+                        View Analysis
+                    </a>
+                    <a href="ai_consultant.html?product=2" class="home-ai-link">
+                        Ask AI
+                    </a>
+                    <button type="button" class="home-cart-btn" data-product-id="2" aria-pressed="false">
+                        Add to Cart
+                    </button>
+
+                </article>
+
+
+                <!-- Product 3 -->
+                <article class="product-card">
+
+                    <div class="product-image">
+                        Product Image
+                    </div>
+
+                    <p class="product-brand">
+                        The Ordinary
+                    </p>
+
+                    <h3>
+                        Niacinamide 10% + Zinc 1%
+                    </h3>
+
+                    <p>
+                        Dry • Combination • Dehydrated
+                    </p>
+
+                    <a href="product_detail.html?id=3">
+                        View Analysis
+                    </a>
+                    <a href="ai_consultant.html?product=3" class="home-ai-link">
+                        Ask AI
+                    </a>
+                    <button type="button" class="home-cart-btn" data-product-id="3" aria-pressed="false">
+                        Add to Cart
+                    </button>
+
+                </article>
+
+            </div>
+
+
+            <a href="products.html" class="view-all-btn">
+                View All Products
+            </a>
+
+        </section>
+
+
+        <!-- ==================== AI CONSULTANT ==================== -->
+        <section class="ai-section">
+
+            <div class="ai-content">
+
+                <p>
+                    GlowGuide AI
+                </p>
+
+                <h2>
+                    Still not sure what your skin needs?
+                </h2>
+
+                <p>
+                    Talk with our AI skincare consultant about
+                    your skin type, concerns, ingredients,
+                    routines, or specific products.
+                </p>
+
+                <a href="ai_consultant.html">
+                    Start AI Consultation
+                </a>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="footer">
+
+        <div class="footer-about">
+
+            <h2>
+                GlowGuide
+            </h2>
+
+            <p>
+                Smart Skincare Search & AI Consultation Platform.
+            </p>
+
+        </div>
+
+
+        <div class="footer-links">
+
+            <h3>Explore</h3>
+
+            <a href="products.html">
+                Products
+            </a>
+
+            <a href="#">
+                Ingredients
+            </a>
+
+            <a href="ai_consultant.html">
+                AI Consultant
+            </a>
+
+        </div>
+
+
+        <div class="footer-disclaimer">
+
+            <h3>Disclaimer</h3>
+
+            <p>
+                GlowGuide provides skincare information for
+                educational and reference purposes only.
+                AI recommendations do not replace professional
+                medical advice.
+            </p>
+
+            <p>
+                Some purchasing links may be affiliate links.
+            </p>
+
+        </div>
+
+
+        <div class="footer-bottom">
+
+            <p>
+                &copy; 2026 GlowGuide. All rights reserved.
+            </p>
+
+        </div>
+
+    </footer>
+
+</body>
+
+</html>

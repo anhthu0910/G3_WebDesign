@@ -1,0 +1,57 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+  <title>My Cart | GlowGuide</title>
+
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/cart.css">
+  <link rel="stylesheet" href="../css/auth.css">
+  <script src="../js/auth.js" defer></script>
+
+  <script src="../js/main.js" defer></script>
+  <script src="../js/cart.js" defer></script>
+  <script src="../js/cart_page.js" defer></script>
+</head>
+
+<body>
+  <header class="navbar">
+    <a href="index.html" class="logo">GlowGuide </a>
+
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="products.html">Products</a>
+      <a href="skin_quiz.html">Skin Quiz</a>
+      <a href="ai_consultant.html">AI Consultant</a>
+      <a href="cart.html">Cart</a>
+      <span id="accountArea"><a href="login.html">Login / Sign Up</a></span>
+    </nav>
+  </header>
+
+  <main class="cart-page">
+    <div class="cart-container">
+      <h1>My Cart</h1>
+      <div class="cart-layout">
+        <section class="cart-products">
+          <div class="cart-section-heading"><h2>Products</h2><span id="cartCount">0 items</span></div>
+          <div id="cartItems">Loading your cart...</div>
+        </section>
+        <aside class="cart-summary">
+          <h2>Cart Summary</h2>
+          <p>Total Items: <strong id="summaryCount">0</strong></p>
+          <p>Estimated Total: <strong id="estimatedTotal">0 ₫</strong></p>
+          <button id="clearCartButton" type="button" class="cart-clear">Clear Cart</button>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>© 2026 GlowGuide. All rights reserved.</p>
+  </footer>
+</body>
+</html>

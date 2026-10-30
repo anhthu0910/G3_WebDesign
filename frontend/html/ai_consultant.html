@@ -1,0 +1,186 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+  <title>AI Skincare Consultant | GlowGuide</title>
+
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/chatbot.css">
+  <link rel="stylesheet" href="../css/auth.css">
+  <script src="../js/auth.js" defer></script>
+
+  <!-- Markdown rendering -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+  <!-- HTML sanitization -->
+  <script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
+
+  <!-- GlowGuide JavaScript -->
+  <script src="../js/main.js" defer></script>
+  <script src="../js/product_data.js" defer></script>
+  <script src="../js/api.js" defer></script>
+  <script src="../js/chatbot.js" defer></script>
+
+</head>
+<body>
+
+  <header class="navbar">
+    <a href="index.html" class="logo">GlowGuide </a>
+
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="products.html">Products</a>
+      <a href="skin_quiz.html">Skin Quiz</a>
+      <a href="ai_consultant.html">AI Consultant</a>
+      <a href="cart.html">Cart</a>
+      <span id="accountArea"><a href="login.html">Login / Sign Up</a></span>
+    </nav>
+  </header>
+
+  <main class="chat-page">
+
+    <section class="chat-intro">
+      <span class="tag">YOUR BEAUTY COMPANION</span>
+      <h1>AI Skincare Consultant</h1>
+      <p>
+        Ask questions about skincare ingredients,
+        routines and products tailored to your needs.
+      </p>
+    </section>
+
+    <section class="chat-layout">
+
+      <aside class="chat-sidebar">
+        <div class="sidebar-card">
+          <div class="sidebar-icon">🌸</div>
+          <h2>Hello, beautiful skin!</h2>
+          <p>
+            Learn about skincare and explore
+            options that match your skin concerns.
+          </p>
+        </div>
+
+        <div class="sidebar-card">
+          <h3>Try asking</h3>
+
+          <button class="suggestion"
+                  data-question="How do I build a skincare routine for oily skin?">
+            Routine for oily skin
+          </button>
+
+          <button class="suggestion"
+                  data-question="What does niacinamide do in skincare?">
+            What is niacinamide?
+          </button>
+
+          <button class="suggestion"
+                  data-question="What should I consider when choosing moisturizer for sensitive skin?">
+            Sensitive skin moisturizer
+          </button>
+
+          <button class="suggestion"
+                  data-question="How should I introduce a new skincare product?">
+            Starting a new product
+          </button>
+        </div>
+
+        <div class="sidebar-card sidebar-disclaimer">
+          <h3>Important Note</h3>
+          <p>
+            GlowGuide is for educational purposes.
+            It does not provide medical diagnoses
+            or replace professional dermatological care.
+          </p>
+        </div>
+      </aside>
+
+      <section class="chat-container"
+               aria-label="Skincare consultation chat">
+
+        <div class="chat-header">
+          <div class="bot-avatar">✨</div>
+
+          <div class="bot-profile">
+            <h2>GlowGuide Assistant</h2>
+            <p id="chatMode">AI-powered skincare guidance</p>
+          </div>
+
+          <button id="clearChat"
+                  type="button"
+                  class="clear-chat">
+            New Chat
+          </button>
+        </div>
+
+        <div id="chatMessages"
+             class="chat-messages"
+             role="log"
+             aria-live="polite"
+             aria-relevant="additions">
+
+          <div class="message bot-message">
+            <div class="message-avatar">✨</div>
+            <div class="message-content">
+              <p>
+                Hi! Welcome to GlowGuide! 🌸
+              </p>
+              <p>
+                Tell me about your skin type or
+                the skincare product you're exploring.
+              </p>
+              <p>
+                I can share educational skincare information. Tell me what you would like to know.
+              </p>
+            </div>
+          </div>
+
+        </div>
+
+        <div id="typingIndicator"
+             class="typing-indicator"
+             hidden>
+          <span>✨</span>
+          <span>Preparing response...</span>
+        </div>
+
+        <form id="chatForm" class="chat-input-area">
+
+          <textarea
+            id="messageInput"
+            placeholder="Ask me anything about skincare..."
+            rows="1"
+            maxlength="1500"
+            aria-label="Your message"
+            required
+          ></textarea>
+
+          <button type="submit"
+                  id="sendButton"
+                  class="send-button"
+                  aria-label="Send message">
+            ➤
+          </button>
+
+        </form>
+
+        <p class="chat-footer-note">
+          AI responses may contain errors. Verify important skincare information.
+        </p>
+
+      </section>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2026 GlowGuide. All rights reserved.</p>
+    <p>
+      Skincare information is for educational purposes.
+    </p>
+  </footer>
+
+</body>
+</html>

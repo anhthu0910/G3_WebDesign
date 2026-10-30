@@ -1,0 +1,42 @@
+#accountArea { display: inline-flex; align-items: center; vertical-align: middle; flex-wrap: wrap; gap: 12px; margin-left: 12px; min-height: 42px; }
+#accountArea a { color: #a7607a; text-decoration: none; }
+.admin-nav-links { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 14px; margin-left: 12px; }
+.admin-nav-links a { color: #a7607a !important; font-size: .92em; }
+.account-logout { border: 1px solid #d7a8b9; border-radius: 9px; padding: 9px 14px; background: white; color: #a7607a; cursor: pointer; font: inherit; line-height: 1.2; }
+.auth-page { min-height: 85vh; display: flex; justify-content: center; align-items: center; padding: 50px 20px; background: linear-gradient(135deg, #fff9f8, #f9e7ee); }
+.auth-card { width: 100%; max-width: 460px; padding: 42px; background: white; border: 1px solid #f1dfe6; border-radius: 22px; box-shadow: 0 12px 40px rgba(100,60,75,.08); }
+.auth-card form { display: flex; flex-direction: column; gap: 10px; }
+.auth-card input { padding: 13px; border: 1px solid #e8d1d9; border-radius: 10px; font: inherit; }
+.auth-card button { padding: 14px; border: 0; border-radius: 11px; background: #b97c91; color: white; font-weight: 700; cursor: pointer; }
+.auth-message { min-height: 20px; margin-top: 16px; color: #a45570; text-align: center; }
+.login-role-choice { display: flex; gap: 10px; margin: 18px 0; }
+.role-button { flex: 1; border: 1px solid #d7a8b9; border-radius: 9px; padding: 10px; background: white; color: #a7607a; cursor: pointer; }
+.role-button.active { background: #b97c91; color: white; }
+.show-password { display: flex !important; align-items: center; gap: 7px; font-weight: 400 !important; }
+.admin-page { padding: 45px 6%; background: #fff9f8; min-height: 85vh; }
+.admin-shell { max-width: 1100px; margin: auto; }
+.admin-stats, .admin-panel { background: white; border: 1px solid #f1dfe6; border-radius: 14px; padding: 22px; margin: 20px 0; }
+.admin-panel-heading, .admin-product-row, .admin-user-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.admin-product-list, #userList { display: grid; gap: 10px; margin-top: 18px; }
+.admin-product-row, .admin-user-row { border-top: 1px solid #f1dfe6; padding: 12px 0; }
+.admin-form { display: grid; gap: 12px; max-width: 650px; }
+.admin-form label { display: grid; gap: 5px; color: #725966; font-weight: 600; }
+.admin-form input, .admin-form textarea, #productSearch { padding: 10px; border: 1px solid #e8d1d9; border-radius: 8px; font: inherit; }
+.admin-panel button { border: 1px solid #d7a8b9; border-radius: 8px; padding: 8px 12px; background: white; color: #a7607a; cursor: pointer; }
+.admin-overview { display: grid; gap: 18px; margin: 20px 0; }
+.overview-heading, .overview-columns { display: grid; gap: 18px; }
+.overview-heading { grid-template-columns: 1fr auto; align-items: center; }
+.overview-heading h2 { margin: 0; }
+.overview-heading button, .overview-box a { color: #a7607a; }
+.overview-cards { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+.overview-card, .overview-box { padding: 18px; border: 1px solid #f1dfe6; border-radius: 12px; background: white; }
+.overview-card span, .overview-card strong { display: block; }
+.overview-card span { color: #806c76; font-size: 13px; }
+.overview-card strong { margin-top: 8px; color: #a7607a; font-size: 26px; }
+.overview-columns { grid-template-columns: repeat(3, 1fr); }
+.overview-box h3 { margin-top: 0; }
+.overview-box a { display: block; margin: 9px 0; text-decoration: none; }
+.overview-error { color: #a04462; }
+@media (max-width: 800px) { .overview-cards, .overview-columns { grid-template-columns: 1fr 1fr; } .overview-heading { grid-template-columns: 1fr; } }
+@media (max-width: 500px) { .overview-cards, .overview-columns { grid-template-columns: 1fr; } }
+.auth-footer-text, .guest-link { text-align: center; margin-top: 20px; }

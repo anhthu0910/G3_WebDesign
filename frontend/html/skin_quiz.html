@@ -1,0 +1,75 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Skin Quiz | GlowGuide</title>
+
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/skin_quiz.css">
+  <link rel="stylesheet" href="../css/auth.css">
+  <script src="../js/auth.js" defer></script>
+
+  <script src="../js/main.js" defer></script>
+  <script src="../js/skin_quiz.js" defer></script>
+</head>
+
+<body>
+  <header class="navbar">
+    <a href="index.html" class="logo">GlowGuide </a>
+
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="products.html">Products</a>
+      <a href="skin_quiz.html" class="active">Skin Quiz</a>
+      <a href="ai_consultant.html">AI Consultant</a>
+      <a href="cart.html">Cart</a>
+      <span id="accountArea"><a href="login.html">Login / Sign Up</a></span>
+    </nav>
+  </header>
+
+  <main class="quiz-page">
+    <section class="quiz-container">
+
+      <p class="quiz-eyebrow">PERSONALIZED SKINCARE</p>
+      <h1>Discover Your Skin Type</h1>
+
+      <p class="quiz-intro">
+        Answer five simple questions to explore your skin
+        characteristics and find products on GlowGuide.
+      </p>
+
+      <div class="quiz-progress-info">
+        <span id="questionCounter">Question 1 of 5</span>
+        <span id="progressText">20%</span>
+      </div>
+
+      <div class="quiz-progress">
+        <div id="progressBar"></div>
+      </div>
+
+      <div id="quizQuestion" class="quiz-question"></div>
+
+      <div class="quiz-navigation">
+        <button id="backButton" type="button">← Back</button>
+        <button id="nextButton" type="button">Next →</button>
+      </div>
+
+      <section id="quizResult" class="quiz-result" hidden></section>
+
+      <p class="quiz-disclaimer">
+        This quiz is for general skincare guidance only
+        and does not provide a medical diagnosis.
+      </p>
+
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2026 GlowGuide. All rights reserved.</p>
+    <p>Skincare information is for educational purposes.</p>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,176 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Product Details | GlowGuide</title>
+
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/product_detail.css">
+  <link rel="stylesheet" href="../css/auth.css">
+  <script src="../js/auth.js" defer></script>
+
+  <script src="../js/main.js" defer></script>
+  <script src="../js/cart.js" defer></script>
+  <script src="../js/product_detail.js" defer></script>
+</head>
+
+<body>
+  <header class="navbar">
+    <a href="index.html" class="logo">GlowGuide </a>
+
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="products.html">Products</a>
+      <a href="index.html#skin-match">Skin Quiz</a>
+      <a href="ai_consultant.html">AI Consultant</a>
+      <a href="cart.html">Cart</a>
+      <span id="accountArea"><a href="login.html">Login / Sign Up</a></span>
+    </nav>
+  </header>
+
+  <main class="detail-page">
+
+    <div class="breadcrumb">
+      <a href="index.html">Home</a>
+      <span>/</span>
+      <a href="products.html">Products</a>
+      <span>/</span>
+      <span id="breadcrumbName">Product Detail</span>
+    </div>
+
+    <section id="loadingState" class="not-found">
+      <h2>Loading product...</h2>
+      <p>Please wait while we load the product details.</p>
+    </section>
+
+    <section id="notFound" class="not-found" hidden>
+      <h1>Product Not Found</h1>
+      <p id="notFoundMessage">
+        Sorry, this product does not exist.
+      </p>
+      <a href="products.html" class="detail-button">
+        Back to Products
+      </a>
+    </section>
+
+    <div id="productDetail" hidden>
+
+      <section class="product-overview">
+
+        <div class="product-visual" id="productVisual">
+          <span id="productIcon">🧴</span>
+        </div>
+
+        <div class="product-description">
+
+          <p class="product-brand-detail" id="productBrand"></p>
+
+          <h1 id="productName"></h1>
+
+          <p class="product-category-detail" id="productCategory"></p>
+
+          <p class="product-price-detail" id="productPrice"></p>
+
+          <p class="product-summary" id="productSummary"></p>
+
+          <h3>Suitable Skin Types</h3>
+          <div id="skinTags" class="detail-tags"></div>
+
+          <h3>Skin Concerns</h3>
+          <div id="concernTags" class="detail-tags"></div>
+
+          <div class="detail-actions">
+            <button
+              id="cartButton"
+              type="button"
+              class="detail-button add-to-cart-btn"
+              aria-pressed="false"
+            >
+              Add to Cart
+            </button>
+            <a
+              id="askAI"
+              class="detail-button"
+              href="ai_consultant.html"
+            >
+              Ask AI About This Product
+            </a>
+
+            <a
+              id="buyProduct"
+              class="detail-button"
+              href="#"
+              target="_blank"
+              rel="noopener noreferrer sponsored nofollow"
+              hidden
+            >
+              🛍️ Buy This Product
+            </a>
+          </div>
+
+        </div>
+      </section>
+
+      <section class="information-grid">
+
+        <article class="information-card">
+          <h2>Key Ingredients</h2>
+          <ul id="ingredients"></ul>
+
+          <p id="ingredientDisclaimer" class="ingredient-disclaimer">
+            Ingredient information has not yet been verified.
+          </p>
+        </article>
+
+        <article class="information-card">
+          <h2>Benefits</h2>
+          <ul id="benefits"></ul>
+        </article>
+
+        <article class="information-card">
+          <h2>How to Use</h2>
+          <p id="usage"></p>
+        </article>
+
+        <article class="information-card">
+          <h2>Important Notes</h2>
+          <p id="cautions"></p>
+        </article>
+
+      </section>
+
+      <section class="related-section">
+        <h2>Similar Products</h2>
+
+        <div id="similarProducts" class="related-grid"></div>
+      </section>
+
+      <p class="medical-disclaimer">
+        GlowGuide provides educational skincare information,
+        not medical diagnosis. Individual reactions may vary.
+        Consult a dermatologist for persistent or severe concerns.
+      </p>
+      
+      <p class="affiliate-disclosure">
+        Affiliate Disclosure: Some product links on GlowGuide
+        may be affiliate links. We may earn a commission
+        from qualifying purchases at no additional cost to you.
+        Product recommendations are based on skincare
+        information, not commission rates.
+      </p>
+
+
+    </div>
+
+  </main>
+
+  <footer>
+    <p>© 2026 GlowGuide. All rights reserved.</p>
+    <p>Skincare information is for educational purposes.</p>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,365 @@
+[
+  {
+    "name": "CeraVe Foaming Facial Cleanser",
+    "brand": "CeraVe",
+    "category": "Cleanser",
+    "price": null,
+    "image": "../images/products/cerave_foaming_cleanser.jpg",
+    "description": "Foaming facial cleanser for normal to oily skin, designed to remove dirt and excess oil without disrupting the skin barrier.",
+    "skinTypes": [
+      "normal",
+      "oily"
+    ],
+    "concerns": [
+      "large-pores",
+      "barrier"
+    ],
+    "ingredients": [
+      "Ceramides",
+      "Hyaluronic Acid",
+      "Niacinamide"
+    ],
+    "benefits": [
+      "Cleanses dirt and excess oil",
+      "Helps maintain the skin moisture barrier"
+    ],
+    "usage": "Massage onto wet skin and rinse with water.",
+    "cautions": "Check the ingredient list on the purchased package before use.",
+    "product_url": "https://www.cerave.com/skincare/cleansers/foaming-facial-cleanser",
+    "affiliate_url": "https://s.shopee.vn/5AtXNepsMI",
+    "visible": true,
+    "id": 1
+  },
+  {
+    "id": 2,
+    "name": "Bioderma Sensibio H2O",
+    "brand": "Bioderma",
+    "category": "Makeup Remover",
+    "price": null,
+    "currency": "VND",
+    "skinTypes": [
+      "sensitive",
+      "normal",
+      "dry",
+      "oily",
+      "combination"
+    ],
+    "concerns": [
+      "barrier"
+    ],
+    "color": "#f5e7ec",
+    "icon": "💧",
+    "image": "../images/products/bioderma_sensibio_h2o.jpg",
+    "description": "Micellar cleansing water for removing makeup and impurities, designed with sensitive skin in mind.",
+    "ingredients": [],
+    "benefits": [
+      "Removes makeup and impurities",
+      "Gentle cleansing for sensitive skin"
+    ],
+    "usage": "Follow the instructions on the product packaging.",
+    "cautions": "Check the ingredient list on the purchased package before use.",
+    "size": "",
+    "product_url": "https://www.bioderma.com.vn/san-pham/sensibio/h2o",
+    "source_url": "https://www.bioderma.com.vn/san-pham/sensibio/h2o",
+    "affiliate_url": "https://s.shopee.vn/gR81VHrMM",
+    "affiliate_platform": "Shopee",
+    "verified": false,
+    "last_checked": "2026-10-23"
+  },
+  {
+    "id": 3,
+    "name": "The Ordinary Niacinamide 10% + Zinc 1%",
+    "brand": "The Ordinary",
+    "category": "Serum",
+    "price": null,
+    "currency": "VND",
+    "skinTypes": [
+      "normal",
+      "oily",
+      "combination",
+      "dry"
+    ],
+    "concerns": [
+      "large-pores",
+      "dark-spots",
+      "acne"
+    ],
+    "color": "#f0eee9",
+    "icon": "✨",
+    "image": "../images/products/the_ordinary_niacinamide.jpg",
+    "description": "Water-based serum targeting visible shine, uneven-looking texture and dullness.",
+    "ingredients": [
+      "Niacinamide",
+      "Zinc PCA"
+    ],
+    "benefits": [
+      "Helps reduce the appearance of excess oil",
+      "Supports more even-looking skin"
+    ],
+    "usage": "Apply a few drops in the morning and evening as directed by the brand.",
+    "cautions": "Patch test before use and discontinue if irritation occurs.",
+    "size": "30 ml",
+    "product_url": "https://theordinary.com/en-us/niacinamide-10-zinc-1-serum-100436.html",
+    "source_url": "https://theordinary.com/en-us/niacinamide-10-zinc-1-serum-100436.html",
+    "affiliate_url": "https://s.shopee.vn/906FwvitYx",
+    "affiliate_platform": "Shopee",
+    "verified": false,
+    "last_checked": "2026-10-23"
+  },
+  {
+    "name": "La Roche-Posay Cicaplast Baume B5+",
+    "brand": "La Roche-Posay",
+    "category": "Moisturizer",
+    "price": null,
+    "image": "../images/products/cicaplast_baume_b5.png",
+    "description": "Multi-purpose soothing balm for skin that needs moisture and barrier support.",
+    "skinTypes": [
+      "dry",
+      "sensitive",
+      "normal",
+      "combination"
+    ],
+    "concerns": [
+      "barrier",
+      "dryness"
+    ],
+    "ingredients": [
+      "Panthenol",
+      "Madecassoside",
+      "Shea Butter"
+    ],
+    "benefits": [
+      "Helps soothe dry-feeling skin",
+      "Supports the skin moisture barrier"
+    ],
+    "usage": "Apply to clean skin according to the product instructions.",
+    "cautions": "Avoid the eye area and open wounds; check the package instructions.",
+    "product_url": "https://www.larocheposay.vn/cicaplast/cicaplast-baume-b5-plus",
+    "affiliate_url": "https://s.shopee.vn/3qO9nZuWrX",
+    "visible": true,
+    "id": 4
+  },
+  {
+    "id": 5,
+    "name": "Beauty of Joseon Relief Sun: Rice + Probiotics SPF50+ PA++++",
+    "brand": "Beauty of Joseon",
+    "category": "Sunscreen",
+    "price": null,
+    "currency": "VND",
+    "skinTypes": [
+      "normal",
+      "dry",
+      "combination"
+    ],
+    "concerns": [
+      "dark-spots",
+      "aging"
+    ],
+    "color": "#f4ecda",
+    "icon": "☀️",
+    "image": "../images/products/beauty_of_joseon_relief_sun.jpg",
+    "description": "Daily sunscreen from Beauty of Joseon. The brand also uses the updated product name Relief Sun: Rice + Niacinamide for the same formula.",
+    "ingredients": [],
+    "benefits": [
+      "Provides broad-spectrum sun protection when used as directed"
+    ],
+    "usage": "Apply generously before sun exposure and reapply according to label instructions.",
+    "cautions": "Check the local product label, ingredients and sun-protection directions.",
+    "size": "",
+    "product_url": "https://ie.beautyofjoseon.com/products/relief-sun-rice-probiotics-spf50-pa-uk",
+    "source_url": "https://ie.beautyofjoseon.com/products/relief-sun-rice-probiotics-spf50-pa-uk",
+    "affiliate_url": "https://s.shopee.vn/4B10CWy2ru",
+    "affiliate_platform": "Shopee",
+    "verified": false,
+    "last_checked": "2026-10-23"
+  },
+  {
+    "id": 6,
+    "name": "COSRX Low pH Good Morning Gel Cleanser",
+    "brand": "COSRX",
+    "category": "Cleanser",
+    "price": null,
+    "currency": "VND",
+    "skinTypes": [
+      "oily",
+      "combination",
+      "normal"
+    ],
+    "concerns": [
+      "acne",
+      "large-pores"
+    ],
+    "color": "#e5f0e8",
+    "icon": "🫧",
+    "image": "/images/product-placeholder.svg",
+    "description": "Low-pH gel cleanser designed to remove impurities while helping maintain the skin's natural balance.",
+    "ingredients": [
+      "Tea Tree Leaf Oil",
+      "Betaine Salicylate"
+    ],
+    "benefits": [
+      "Removes daily impurities",
+      "Helps leave skin feeling clean without excessive dryness"
+    ],
+    "usage": "Lather a small amount with water, gently massage onto wet skin, and rinse thoroughly.",
+    "cautions": "Avoid the eye area. Patch test before use and discontinue if irritation occurs.",
+    "size": "150 ml",
+    "product_url": "https://www.cosrx.com/products/low-ph-good-morning-gel-cleanser",
+    "source_url": "https://www.cosrx.com/products/low-ph-good-morning-gel-cleanser",
+    "affiliate_url": "https://s.shopee.vn/qkYF6ShTw",
+    "affiliate_platform": "Shopee",
+    "verified": false,
+    "last_checked": "2026-10-25"
+  },
+  {
+    "id": 7,
+    "name": "Anua Heartleaf 77 Soothing Toner",
+    "brand": "Anua",
+    "category": "Toner",
+    "price": null,
+    "currency": "VND",
+    "skinTypes": [
+      "sensitive",
+      "normal",
+      "oily",
+      "combination"
+    ],
+    "concerns": [
+      "redness",
+      "barrier",
+      "acne"
+    ],
+    "color": "#e7eee2",
+    "icon": "💧",
+    "image": "/images/product-placeholder.svg",
+    "description": "A lightweight toner formulated with heartleaf extract to help soothe skin and provide lightweight hydration.",
+    "ingredients": [
+      "Houttuynia Cordata Extract"
+    ],
+    "benefits": [
+      "Provides lightweight hydration",
+      "Helps soothe the look and feel of irritated skin"
+    ],
+    "usage": "After cleansing, apply an appropriate amount to the face with hands or a cotton pad.",
+    "cautions": "Check the ingredient list on the purchased package before use. Patch test if you have sensitive skin.",
+    "size": "250 ml",
+    "product_url": "https://anua.com/products/heartleaf-77-soothing-toner",
+    "source_url": "https://anua.com/products/heartleaf-77-soothing-toner",
+    "affiliate_url": "https://s.shopee.vn/AKbdYk19Y2",
+    "affiliate_platform": "Shopee",
+    "verified": false,
+    "last_checked": "2026-10-25"
+  },
+  {
+    "id": 8,
+    "name": "SKIN1004 Madagascar Centella Ampoule",
+    "brand": "SKIN1004",
+    "category": "Serum",
+    "price": null,
+    "currency": "VND",
+    "skinTypes": [
+      "sensitive",
+      "dry",
+      "normal",
+      "oily",
+      "combination"
+    ],
+    "concerns": [
+      "redness",
+      "barrier",
+      "dryness"
+    ],
+    "color": "#f2e8d8",
+    "icon": "🌿",
+    "image": "/images/product-placeholder.svg",
+    "description": "A lightweight centella ampoule designed to hydrate and help soothe skin.",
+    "ingredients": [
+      "Centella Asiatica Extract"
+    ],
+    "benefits": [
+      "Helps soothe the skin",
+      "Provides lightweight hydration"
+    ],
+    "usage": "After cleansing and toning, apply a few drops to the face and gently pat until absorbed.",
+    "cautions": "Check the ingredient list on the purchased package before use. Discontinue if irritation occurs.",
+    "size": "55 ml",
+    "product_url": "https://skin1004vietnam.vn/products/tinh-cha-t-duong-sang-skin1004-madagascar-centella-tone-brightening-capsule-ampoule-50ml",
+    "source_url": "https://skin1004vietnam.vn/products/tinh-cha-t-duong-sang-skin1004-madagascar-centella-tone-brightening-capsule-ampoule-50ml",
+    "affiliate_url": "https://s.shopee.vn/gR836R1QO",
+    "affiliate_platform": "Shopee",
+    "verified": false,
+    "last_checked": "2026-10-25"
+  },
+  {
+    "id": 9,
+    "name": "CeraVe Moisturizing Cream",
+    "brand": "CeraVe",
+    "category": "Moisturizer",
+    "price": null,
+    "currency": "VND",
+    "skinTypes": [
+      "dry",
+      "normal",
+      "sensitive"
+    ],
+    "concerns": [
+      "dryness",
+      "barrier"
+    ],
+    "color": "#e4ebdb",
+    "icon": "🧴",
+    "image": "/images/product-placeholder.svg",
+    "description": "A rich moisturizer formulated to help hydrate dry skin and support the skin's protective barrier.",
+    "ingredients": [
+      "Ceramides",
+      "Hyaluronic Acid"
+    ],
+    "benefits": [
+      "Helps provide lasting hydration",
+      "Helps support the skin moisture barrier"
+    ],
+    "usage": "Apply to clean skin as needed, following the product label.",
+    "cautions": "Check the ingredient list on the purchased package before use.",
+    "size": "177 ml",
+    "product_url": "https://www.cerave.com/skincare/moisturizers/moisturizing-cream",
+    "source_url": "https://www.cerave.com/skincare/moisturizers/moisturizing-cream",
+    "affiliate_url": "https://s.shopee.vn/1gJfF5isUR",
+    "affiliate_platform": "Shopee",
+    "verified": false,
+    "last_checked": "2026-10-25"
+  },
+  {
+    "id": 10,
+    "name": "Anessa Perfect UV Sunscreen Skincare Milk SPF50+ PA++++",
+    "brand": "Anessa",
+    "category": "Sunscreen",
+    "price": null,
+    "currency": "VND",
+    "skinTypes": [
+      "normal",
+      "oily",
+      "combination"
+    ],
+    "concerns": [
+      "dark-spots",
+      "aging"
+    ],
+    "color": "#f7e9c9",
+    "icon": "☀️",
+    "image": "/images/product-placeholder.svg",
+    "description": "A high-protection daily sunscreen milk designed to help protect skin from UV exposure.",
+    "ingredients": [],
+    "benefits": [
+      "Provides SPF50+ PA++++ sun protection when used as directed"
+    ],
+    "usage": "Shake if directed on the label, apply generously before sun exposure, and reapply according to package instructions.",
+    "cautions": "Check the local product label, ingredients and sun-protection directions. Avoid contact with eyes.",
+    "size": "60 ml",
+    "product_url": "https://www.anessa.vn/products/sua-chong-nang-duong-da-kiem-dau-bao-ve-hoan-hao-spf50-pa-60ml",
+    "source_url": "https://www.anessa.vn/products/sua-chong-nang-duong-da-kiem-dau-bao-ve-hoan-hao-spf50-pa-60ml",
+    "affiliate_url": "https://s.shopee.vn/40ha1U3TAr",
+    "affiliate_platform": "Shopee",
+    "verified": false,
+    "last_checked": "2026-10-25"
+  }
+]

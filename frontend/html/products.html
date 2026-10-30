@@ -1,0 +1,177 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+  <title>Skincare Products | GlowGuide</title>
+
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/product.css">
+  <link rel="stylesheet" href="../css/auth.css">
+  <script src="../js/auth.js" defer></script>
+
+  <script src="../js/main.js" defer></script>
+  <script src="../js/cart.js" defer></script>
+  <script src="../js/products.js" defer></script>
+</head>
+<body>
+
+  <header class="navbar">
+    <a href="index.html" class="logo">GlowGuide </a>
+
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="products.html">Products</a>
+      <a href="skin_quiz.html">Skin Quiz</a>
+      <a href="ai_consultant.html">AI Consultant</a>
+      <a href="cart.html">Cart</a>
+      <span id="accountArea"><a href="login.html">Login / Sign Up</a></span>
+    </nav>
+  </header>
+
+  <main>
+    <section class="products-hero">
+      <span class="tag">CURATED SKINCARE</span>
+      <h1>Find Your Perfect Skincare</h1>
+      <p>
+        Explore skincare products and discover
+        options suited to your skin's needs.
+      </p>
+    </section>
+
+    <section class="products-layout">
+
+      <aside class="filter-sidebar">
+        <div class="filter-header">
+          <h2>Filters</h2>
+          <button id="resetFilters" type="button">
+            Reset
+          </button>
+        </div>
+
+        <div class="filter-group">
+          <h3>Skin Type</h3>
+
+          <label>
+            <input type="checkbox" name="skinType" value="oily">
+            Oily Skin
+          </label>
+
+          <label>
+            <input type="checkbox" name="skinType" value="dry">
+            Dry Skin
+          </label>
+
+          <label>
+            <input type="checkbox" name="skinType" value="combination">
+            Combination Skin
+          </label>
+
+          <label>
+            <input type="checkbox" name="skinType" value="sensitive">
+            Sensitive Skin
+          </label>
+
+          <label>
+            <input type="checkbox" name="skinType" value="normal">
+            Normal Skin
+          </label>
+        </div>
+
+        <div class="filter-group">
+          <h3>Skin Concerns</h3>
+
+          <label>
+            <input type="checkbox" name="concern" value="acne">
+            Acne
+          </label>
+
+          <label>
+            <input type="checkbox" name="concern" value="dryness">
+            Dryness
+          </label>
+
+          <label>
+            <input type="checkbox" name="concern" value="dark-spots">
+            Dark Spots
+          </label>
+
+          <label>
+            <input type="checkbox" name="concern" value="aging">
+            Anti-Aging
+          </label>
+
+          <label>
+            <input type="checkbox" name="concern" value="barrier">
+            Skin Barrier
+          </label>
+
+          <label>
+            <input type="checkbox" name="concern" value="large-pores">
+            Large Pores
+          </label>
+        </div>
+
+        <div class="filter-note">
+          <p>
+            Not sure what suits your skin?
+          </p>
+          <a href="ai_consultant.html">
+            Ask our AI Consultant →
+          </a>
+        </div>
+      </aside>
+
+      <div class="product-content">
+
+        <div class="product-toolbar">
+          <div class="search-box">
+            <input
+              type="search"
+              id="searchInput"
+              placeholder="Search products or brands..."
+              aria-label="Search products"
+            >
+          </div>
+
+          <select id="sortSelect" aria-label="Sort products">
+            <option value="default">Sort: Featured</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="name">Name: A to Z</option>
+          </select>
+        </div>
+
+        <p id="resultCount" class="result-count"
+           aria-live="polite"></p>
+
+        <div id="productGrid" class="product-grid"></div>
+
+        <div id="emptyState" class="empty-state" hidden>
+          <h2>No products found</h2>
+          <p>Try changing your search or filters.</p>
+          <button id="emptyReset" class="btn" type="button">
+            Clear Filters
+          </button>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2026 GlowGuide. All rights reserved.</p>
+    <p>
+      Product suitability is informational and
+      does not replace professional medical advice.
+    </p>
+    <p>
+      Some links may be affiliate links.
+    </p>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,38 @@
+"use strict";
+let adminProducts = [];
+const adminRequest = (path, options = {}) => authRequest(`/api/admin${path}`, options);
+document.addEventListener("DOMContentLoaded", async () => {
+  const status = document.getElementById("adminStatus"), content = document.getElementById("adminContent");
+  const stats = document.getElementById("adminStats");
+  if (stats && !document.getElementById("analytics")) { const anchor = document.createElement("span"); anchor.id = "analytics"; stats.before(anchor); }
+  document.getElementById("userList")?.closest(".admin-panel")?.setAttribute("id", "users");
+  document.getElementById("productList")?.closest(".admin-panel")?.setAttribute("id", "product-management");
+  try { const result = await authRequest("/api/admin/me"); if (result.user?.role !== "admin") throw new Error("Admin access required"); status.textContent = `Welcome, ${result.user.username}!`; content.hidden = false; await loadDashboard(); } catch { status.textContent = "Admin access denied. Please log in as an administrator."; const link = document.createElement("a"); link.href = "login.html"; link.textContent = "Go to Login"; status.after(link); }
+  document.getElementById("productSearch").addEventListener("input", event => renderProducts(adminProducts.filter(p => p.name.toLowerCase().includes(event.target.value.toLowerCase()))));
+  document.getElementById("newProductButton").onclick = () => { document.getElementById("productForm").reset(); document.getElementById("productId").value = ""; };
+  document.getElementById("cancelProductButton").onclick = () => document.getElementById("productForm").reset();
+  document.getElementById("productForm").onsubmit = saveProduct;
+});
+async function loadDashboard() { const [products, analytics, users, quiz, content, ai] = await Promise.all([adminRequest("/products"), adminRequest("/analytics"), adminRequest("/users"), adminRequest("/quiz"), adminRequest("/content"), adminRequest("/ai/status")]); adminProducts = products.products; document.getElementById("adminStats").textContent = `Products: ${analytics.products} | Users: ${analytics.users} | Quiz submissions: ${analytics.quiz_submissions} | Affiliate clicks: ${analytics.affiliate_clicks} | Missing images: ${analytics.missing_images}`; renderProducts(adminProducts); renderAdminModules(quiz, content, ai); const list = document.getElementById("userList"); list.replaceChildren(); users.users.forEach(user => { const row = document.createElement("div"); row.className = "admin-user-row"; row.textContent = `${user.username} · ${user.email} · ${user.locked ? "Locked" : "Active"}`; const button = document.createElement("button"); button.textContent = user.locked ? "Unlock" : "Lock"; button.onclick = async () => { await adminRequest(`/users/${user.id}/lock?locked=${!user.locked}`, { method: "PATCH" }); loadDashboard(); }; row.append(button); list.append(row); }); }
+function renderAdminModules(quiz, content, ai) { let panel = document.getElementById("adminModules"); if (!panel) { panel = document.createElement("section"); panel.id = "adminModules"; panel.className = "admin-panel"; document.getElementById("adminContent").append(panel); } panel.innerHTML = `<h2>Other Modules</h2><p><strong>Skin Quiz:</strong> ${quiz.questions.length} managed questions</p><p><strong>AI Consultant:</strong> ${ai.configured ? "Gemini configured" : "Gemini configuration not detected"}</p><p><strong>Home Content:</strong> ${Object.keys(content).length} managed fields</p><button type="button" onclick="window.open('index.html','_blank')">Preview Public Website</button>`; }
+function renderProducts(products) { const list = document.getElementById("productList"); list.replaceChildren(); products.forEach(product => { const row = document.createElement("div"); row.className = "admin-product-row"; const label = document.createElement("span"); label.textContent = `${product.name} · ${product.brand || ""} · ${product.visible ? "Visible" : "Hidden"}`; const edit = document.createElement("button"); edit.textContent = "Edit"; edit.onclick = () => fillProductForm(product); const remove = document.createElement("button"); remove.textContent = "Delete"; remove.onclick = async () => { if (confirm(`Delete ${product.name}?`)) { await adminRequest(`/products/${product.id}`, { method: "DELETE" }); loadDashboard(); } }; row.append(label, edit, remove); list.append(row); }); }
+function fillProductForm(p) { productId.value = p.id; productName.value = p.name; productBrand.value = p.brand || ""; productCategory.value = p.category || ""; productPrice.value = p.price ?? ""; productDescription.value = p.description || ""; productImage.value = p.image || ""; productVisible.checked = p.visible !== false; }
+async function saveProduct(event) { event.preventDefault(); const id = productId.value; const body = { name: productName.value, brand: productBrand.value, category: productCategory.value, price: productPrice.value ? Number(productPrice.value) : null, description: productDescription.value, image: productImage.value, visible: productVisible.checked }; await adminRequest(id ? `/products/${id}` : "/products", { method: id ? "PUT" : "POST", body: JSON.stringify(body) }); adminMessage.textContent = "Product saved."; productForm.reset(); await loadDashboard(); }
+
+async function loadOverview() {
+  const host = document.getElementById("adminContent");
+  if (!host) return;
+  const overview = document.createElement("section");
+  overview.className = "admin-overview";
+  overview.innerHTML = "<p>Loading dashboard overview...</p>";
+  host.prepend(overview);
+  try {
+    const data = await adminRequest("/overview");
+    const card = (label, value) => `<article class="overview-card"><span>${label}</span><strong>${value == null ? "Not tracked" : value}</strong></article>`;
+    const alertRows = Object.entries(data.alerts).filter(([, value]) => value > 0).map(([key, value]) => `<a class="data-alert-link" href="products.html?issue=${encodeURIComponent(key)}" title="Click to view and edit affected products">${key.replaceAll("_", " ")}: <strong>${value}</strong> <span class="data-alert-arrow" aria-hidden="true">→</span></a>`).join("") || "<p>No data alerts.</p>";
+    overview.innerHTML = `<div class="overview-heading"><div><h2>Dashboard Overview</h2><p>Live data from GlowGuide SQLite.</p></div><button id="publicPreview" type="button">View Public Website</button></div><div class="overview-cards">${card("Cosmetics", data.cards.products)}${card("Users", data.cards.users)}${card("Quiz Completions", data.cards.quiz_completions)}${card("AI Requests", data.cards.ai_requests)}${card("Affiliate Clicks", data.cards.affiliate_clicks)}</div><div class="overview-columns"><div class="overview-box"><h3>System Status</h3><p>FastAPI: <b>${data.status.fastapi}</b></p><p>SQLite: <b>${data.status.sqlite}</b></p><p>Gemini: <b>${data.status.gemini}</b></p><p>Skin Quiz: <b>${data.status.skin_quiz}</b></p></div><div class="overview-box"><h3>Data Alerts</h3>${alertRows}</div><div class="overview-box"><h3>Quick Actions</h3><a href="products.html">Manage Products</a><a href="products.html">Add Product</a><a href="skin_quiz.html">Edit Skin Quiz</a><a href="ai_consultant.html">Test AI</a><a href="index.html">Edit Homepage</a></div></div><div class="overview-box"><h3>Recent Activity</h3><p>${data.recent_activity.length ? "Activity available." : "No audit activity recorded."}</p></div>`;
+    document.getElementById("publicPreview").onclick = () => window.open("index.html", "_blank");
+  } catch (error) { overview.innerHTML = `<p class="overview-error">Could not load overview: ${error.message}</p>`; }
+}
+
+document.addEventListener("DOMContentLoaded", loadOverview);

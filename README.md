@@ -85,3 +85,13 @@ Discipline: Web Design
 Group: 3
 
 Members: Le Ngoc Anh Thu, Nguyen Ngan An, Dao Ngoc Hien, Nguyen Truong Thanh Toan
+
+
+## Tri?n khai Render (c?ng t?n mi?n HTTPS)
+
+C?u h?nh, k?t qu? ki?m th? v? h??ng d?n GitHub ? Render: [docs/RENDER.md](docs/RENDER.md).
+
+- Build: `pip install -r requirements.txt`
+- Start: `uvicorn backend.main:app --host 0.0.0.0 --port $PORT --workers 1 --proxy-headers --forwarded-allow-ips='*'`
+- Blueprint `render.yaml` d?ng service tr? ph? v?i persistent disk cho SQLite v? ?nh upload. Render Free ch? ph? h?p demo v?i d? li?u t?m th?i.
+- Kh?ng commit `.env`, database th?t, backup hay th?ng tin t?i kho?n. Seed ch? g?m 10 s?n ph?m.
