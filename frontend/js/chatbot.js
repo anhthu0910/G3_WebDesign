@@ -85,8 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (error) {
       console.error("GlowGuide Chat Error:", error);
       addMessage(
-        "🌸 Sorry, GlowGuide AI is a little busy right now. " +
-        "Please wait a moment and try sending your question again.",
+        "AI is busy. Please try again later.",
         "bot"
       );
       messageInput.value = text;

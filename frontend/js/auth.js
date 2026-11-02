@@ -1,17 +1,41 @@
 "use strict";
 
-// Use the same hostname as the frontend so localhost/127.0.0.1 cookies match.
+// Serve the frontend through FastAPI so session cookies and APIs share an origin.
 const AUTH_API = "";
 
 async function authRequest(path, options = {}) {
   const isFormData = options.body instanceof FormData;
-  const response = await fetch(AUTH_API + path, {
+  let response;
+  try { response = await fetch(AUTH_API + path, {
     ...options,
     credentials: "include",
     headers: isFormData ? (options.headers || {}) : { "Content-Type": "application/json", ...(options.headers || {}) }
-  });
+  }); } catch {
+    throw new Error("Could not connect. Please try again.");
+  }
   const data = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(typeof data.detail === "string" ? data.detail : `Request failed: ${response.status}`);
+  if (response.status === 404) {
+    const local = ["localhost", "127.0.0.1", "[::1]"].includes(window.location.hostname);
+    const guidance = local
+      ? "Please open http://127.0.0.1:8000/ to continue."
+      : "This feature is unavailable. Please try again later.";
+    throw new Error(guidance);
+  }
+  if (!response.ok) {
+    const messages = {
+      400: "Please check your information.",
+      401: path === "/api/auth/login" ? "Incorrect username or password." : "Please sign in to continue.",
+      403: "You do not have permission to do this.",
+      409: "Username or email is already in use.",
+      413: "Please choose an image under 5 MB.",
+      422: "Please check your information.",
+      429: "Too many attempts. Please try again later."
+    };
+    const message = response.status === 400 && path.endsWith("/image")
+      ? "Please choose a JPG, PNG or WEBP image."
+      : messages[response.status] || "Something went wrong. Please try again later.";
+    throw new Error(message);
+  }
   return data;
 }
 
@@ -65,3 +89,13 @@ async function updateAccountNavigation() {
 }
 
 document.addEventListener("DOMContentLoaded", updateAccountNavigation);
+
+function trackAffiliateClick(event) {
+  const link = event.target.closest("a[data-affiliate-product]");
+  if (!link || (event.type === "auxclick" && event.button !== 1)) return;
+  fetch(`/api/products/${encodeURIComponent(link.dataset.affiliateProduct)}/affiliate-click`, {
+    method: "POST", credentials: "include", keepalive: true
+  }).catch(error => console.warn("Could not record affiliate click", error));
+}
+document.addEventListener("click", trackAffiliateClick);
+document.addEventListener("auxclick", trackAffiliateClick);

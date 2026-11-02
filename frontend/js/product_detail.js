@@ -104,7 +104,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     setText(
       "notFoundMessage",
       message,
-      "Unable to load product."
+      "Could not load products. Please try again."
     );
   }
 
@@ -364,6 +364,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       if (affiliateUrl) {
         buyButton.href = affiliateUrl;
+        buyButton.dataset.affiliateProduct = product.id;
         buyButton.hidden = false;
 
         buyButton.textContent =
@@ -518,7 +519,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // ==========================================
 
   if (!productId || !/^\d+$/.test(productId)) {
-    showError("Invalid product ID.");
+    showError("Product not found.");
     return;
   }
 
@@ -527,7 +528,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const product = await fetchProduct(productId);
 
     if (!product) {
-      showError("Sorry, this product does not exist.");
+      showError("Product not found.");
       return;
     }
 
@@ -553,7 +554,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       if (relatedContainer) {
         relatedContainer.textContent =
-          "Similar products are temporarily unavailable.";
+          "Similar products are unavailable.";
       }
     }
 
@@ -564,7 +565,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     );
 
     showError(
-      "Unable to load product. Please check the backend connection."
+      "Could not load products. Please try again."
     );
   }
 });

@@ -40,3 +40,6 @@
 @media (max-width: 800px) { .overview-cards, .overview-columns { grid-template-columns: 1fr 1fr; } .overview-heading { grid-template-columns: 1fr; } }
 @media (max-width: 500px) { .overview-cards, .overview-columns { grid-template-columns: 1fr; } }
 .auth-footer-text, .guest-link { text-align: center; margin-top: 20px; }
+
+.auth-card .role-button:not(.active) { background: #f5edf0; color: #806c76; opacity: .55; }
+.auth-card .role-button:focus-visible { outline: 2px solid #644351; outline-offset: 3px; }

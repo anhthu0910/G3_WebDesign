@@ -5,7 +5,7 @@ from datetime import date, timedelta
 from pathlib import Path
 
 from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 from backend.auth_routes import current_user
 from backend.database import get_connection
@@ -54,7 +54,25 @@ class QuizPayload(BaseModel):
     question_order: int = 0
     title: str = Field(min_length=1, max_length=500)
     description: str = ""
-    answers: list[dict] = []
+    answers: list[dict] = Field(min_length=1)
+
+    @field_validator("title")
+    @classmethod
+    def validate_title(cls, value):
+        if not value.strip():
+            raise ValueError("Question title is required")
+        return value.strip()
+
+    @field_validator("answers")
+    @classmethod
+    def validate_answers(cls, answers):
+        for answer in answers:
+            if not isinstance(answer.get("text"), str) or not answer["text"].strip():
+                raise ValueError("Every answer must contain text")
+            if answer.get("type") not in {None, "dry", "normal", "oily", "combination", "sensitive"}:
+                raise ValueError("Invalid skin type")
+        return answers
+
     published: bool = False
 
 
@@ -148,11 +166,16 @@ def create_product(payload: ProductPayload, admin_user: dict = Depends(require_a
 def update_product(product_id: int, payload: ProductPayload, admin_user: dict = Depends(require_admin)):
     with get_connection() as conn:
         row = conn.execute(
-            "SELECT product_data FROM products WHERE id = ?", (product_id,)
+            "SELECT * FROM products WHERE id = ?", (product_id,)
         ).fetchone()
         if row is None:
             raise HTTPException(status_code=404, detail="Product not found")
         product = json.loads(row["product_data"])
+        # Older catalog JSON can omit fields that already exist in SQL columns.
+        # Fill only missing fields so partial edits preserve the existing values.
+        for field in ("name", "brand", "category", "price", "currency", "image", "affiliate_url", "product_url"):
+            product.setdefault(field, row[field])
+        product.setdefault("visible", bool(row["visible"]))
         product.update(payload.model_dump(exclude_unset=True))
         product["id"] = product_id
         conn.execute(
@@ -175,7 +198,8 @@ def update_product(product_id: int, payload: ProductPayload, admin_user: dict = 
                 product_id,
             ),
         )
-    write_audit(admin_user, "update", "product", product_id)
+    changed = sorted(key for key in payload.model_fields_set if key != "id" and product.get(key) != json.loads(row["product_data"]).get(key))
+    write_audit(admin_user, "update: " + (", ".join(changed) or "no changes"), "product", product_id)
     return product
 
 
@@ -289,7 +313,7 @@ def overview(_: dict = Depends(require_admin)):
             "products_by_category": products_by_category,
         }
         return {
-            "cards": {"products": len(products), "users": users, "quiz_completions": None, "ai_requests": ai_requests or None, "affiliate_clicks": affiliate_clicks or None},
+            "cards": {"products": len(products), "users": users, "quiz_completions": None, "ai_requests": ai_requests, "affiliate_clicks": affiliate_clicks},
             "charts": charts,
             "alerts": alerts,
             "status": {"fastapi": "online", "sqlite": "online", "gemini": "configured" if os.getenv("GEMINI_API_KEY") else "not configured", "skin_quiz": "published" if quiz_published else "not published"},

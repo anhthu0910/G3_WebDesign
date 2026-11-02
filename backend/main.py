@@ -74,6 +74,8 @@ def health_check():
 
 @app.post("/api/chat")
 def chat(request: ChatRequest):
+    with get_connection() as conn:
+        log_id = conn.execute("INSERT INTO ai_usage_logs(status) VALUES ('requested')").lastrowid
     try:
         reply = generate_skincare_reply(
             message=request.message,
@@ -83,12 +85,16 @@ def chat(request: ChatRequest):
             ]
         )
 
+        with get_connection() as conn:
+            conn.execute("UPDATE ai_usage_logs SET status='success' WHERE id=?", (log_id,))
         return {
             "reply": reply,
             "status": "success"
         }
 
     except ServerError:
+        with get_connection() as conn:
+            conn.execute("UPDATE ai_usage_logs SET status='failed' WHERE id=?", (log_id,))
         import logging
         logging.exception("Gemini server unavailable")
 
@@ -98,6 +104,8 @@ def chat(request: ChatRequest):
         )
 
     except Exception:
+        with get_connection() as conn:
+            conn.execute("UPDATE ai_usage_logs SET status='failed' WHERE id=?", (log_id,))
         import logging
         logging.exception("AI consultation failed")
 

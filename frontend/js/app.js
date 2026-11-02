@@ -17,16 +17,7 @@ async function sendChatMessage(message, history = []) {
   );
 
   if (!response.ok) {
-    let errorMessage = "Unable to connect to AI service.";
-
-    try {
-      const errorData = await response.json();
-      errorMessage = errorData.detail || errorMessage;
-    } catch {
-      // Keep default error message
-    }
-
-    throw new Error(errorMessage);
+    throw new Error("AI is busy. Please try again later.");
   }
 
   return await response.json();

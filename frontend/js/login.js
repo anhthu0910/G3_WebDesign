@@ -6,6 +6,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const roleInput = document.getElementById("loginRole");
   document.querySelectorAll(".role-button").forEach(roleButton => roleButton.addEventListener("click", () => {
     document.querySelectorAll(".role-button").forEach(item => item.classList.toggle("active", item === roleButton));
+    document.querySelectorAll(".role-button").forEach(item => item.setAttribute("aria-pressed", String(item === roleButton)));
+    document.querySelector(".auth-footer-text").hidden = roleButton.dataset.role === "admin";
     roleInput.value = roleButton.dataset.role;
     button.textContent = `Login as ${roleButton.dataset.role[0].toUpperCase()}${roleButton.dataset.role.slice(1)}`;
   }));

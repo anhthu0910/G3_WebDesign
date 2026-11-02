@@ -10,16 +10,7 @@ async function sendChatMessage(message, history = []) {
   });
 
   if (!response.ok) {
-    let errorDetail = `HTTP ${response.status}`;
-
-    try {
-      const errorData = await response.json();
-      errorDetail = errorData.detail || errorDetail;
-    } catch {
-      // Keep the HTTP error when the response is not JSON.
-    }
-
-    throw new Error(errorDetail);
+    throw new Error("AI is busy. Please try again later.");
   }
 
   return await response.json();
