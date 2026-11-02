@@ -1,10 +1,20 @@
 
 "use strict";
 
-const CART_KEY = "glowguide_cart";
+let CART_KEY = null;
+const cartReady = (async () => {
+  // Never assign a signed-in cart to the guest when the session API fails.
+  const response = await fetch("/api/auth/me", { credentials: "include" });
+  if (!response.ok && response.status !== 401) throw new Error("Unable to identify cart owner");
+  const user = response.ok ? (await response.json()).user : null;
+  CART_KEY = user ? `glowguide_cart:user:${user.id}` : "glowguide_cart:guest";
+  window.dispatchEvent(new CustomEvent("glowguide:cartchanged"));
+})();
+cartReady.catch(error => console.error(error));
 
 // Lấy danh sách sản phẩm trong Cart
 function getCart() {
+  if (!CART_KEY) return [];
   try {
     const data = JSON.parse(
       localStorage.getItem(CART_KEY) || "[]"
@@ -18,6 +28,7 @@ function getCart() {
 
 // Lưu Cart
 function saveCart(cart) {
+  if (!CART_KEY) return;
   localStorage.setItem(CART_KEY, JSON.stringify(cart));
 
   window.dispatchEvent(
@@ -27,6 +38,7 @@ function saveCart(cart) {
 
 // Thêm sản phẩm vào Cart
 function addToCart(productId) {
+  if (!CART_KEY) { cartReady.then(() => addToCart(productId)).catch(() => alert("Không thể mở giỏ hàng. Vui lòng tải lại trang.")); return; }
   const cart = getCart();
   const id = String(productId);
 
