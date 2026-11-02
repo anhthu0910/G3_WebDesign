@@ -68,7 +68,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const main = document.querySelector("main");
   if (!main) return;
   if (!user || user.role !== "admin") {
-    main.innerHTML = '<section class="admin-home-overview"><h1>Admin access required</h1><p>Please sign in with an administrator account to view this page.</p><a href="login.html">Go to Login</a></section>';
+    main.innerHTML = '<section class="admin-home-overview"><h1>Admin access required</h1><p>Please sign in as an admin.</p><a href="login.html">Go to Login</a></section>';
     return;
   }
   main.replaceChildren();
@@ -88,5 +88,5 @@ document.addEventListener("DOMContentLoaded", async () => {
     const activityHtml = data.recent_activity.length ? data.recent_activity.map(item => `<tr><td>${item.created_at}</td><td>${item.username}</td><td>${item.action}</td><td>${item.entity}${item.entity_id ? ` #${item.entity_id}` : ""}</td></tr>`).join("") : '<tr><td colspan="4" class="empty-activity"><strong>No activity recorded yet.</strong><small>There are no recent admin actions.</small></td></tr>';
     const charts = data.charts;
     page.innerHTML = `<div class="home-overview-heading"><p>GLOWGUIDE ADMIN</p><h1>Home Overview</h1><span>Live management summary from SQLite.</span></div><div class="home-overview-cards">${cardHtml}</div><section class="home-chart-grid" aria-label="Store analytics"><article class="home-chart-panel"><h2>Affiliate Clicks by Month</h2><div class="chart-visual">${renderLineChart(charts.affiliate_clicks_by_month)}</div></article><article class="home-chart-panel"><h2>AI Requests by Week</h2><div class="chart-visual">${renderBarChart(charts.ai_requests_by_week)}</div></article><article class="home-chart-panel"><h2>Products by Category</h2><div class="chart-visual">${renderCategoryChart(charts.products_by_category)}</div></article></section><div class="home-overview-grid"><section class="home-overview-panel"><h2>System Status</h2><p>Current status of key components.</p><table><tbody>${statusHtml}</tbody></table></section><section class="home-overview-panel"><h2>Data Alerts</h2><p>Issues found in current data.</p><table><thead><tr><th>Issue Type</th><th>Count</th></tr></thead><tbody>${alertHtml}</tbody></table></section></div><section class="home-overview-panel activity-panel"><h2>Recent Activity</h2><p>Latest admin actions from audit logs.</p><table><thead><tr><th>Time</th><th>User</th><th>Action</th><th>Details</th></tr></thead><tbody>${activityHtml}</tbody></table></section>`;
-  } catch (error) { page.innerHTML = `<p class="overview-error">Could not load admin overview: ${error.message}</p>`; }
+  } catch (error) { page.innerHTML = '<p class="overview-error">Could not load the dashboard. Please try again.</p>'; }
 });
