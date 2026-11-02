@@ -227,3 +227,11 @@
     padding: 12px 16px;
   }
 }
+
+.admin-quiz-form, .admin-quiz-question, .admin-quiz-answers { display: grid; gap: 16px; text-align: left; }
+.admin-quiz-question { padding: 22px; border: 1px solid #ecd5de; border-radius: 14px; background: white; }
+.admin-quiz-question label { display: grid; gap: 8px; }
+.admin-quiz-question input, .admin-quiz-question textarea, .admin-quiz-question select { box-sizing: border-box; width: 100%; min-width: 0; padding: 12px; border: 1px solid #d4a5b2; border-radius: 8px; font: inherit; }
+.admin-quiz-form button { padding: 12px 18px; border: 1px solid #d4a5b2; border-radius: 8px; background: #fff1f4; color: #644351; cursor: pointer; }
+.admin-quiz-form button:disabled { opacity: .5; cursor: default; }
+.admin-quiz-form > button[type=submit] { position: sticky; bottom: 16px; background: #996477; color: white; }

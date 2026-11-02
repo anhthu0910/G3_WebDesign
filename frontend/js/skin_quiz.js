@@ -112,6 +112,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       const section = document.createElement("section");
       section.className = "admin-quiz-question";
       section.innerHTML = `<h2>Question ${questionIndex + 1}</h2><label>Question title<input name="title-${questionIndex}" value="${escapeValue(question.title)}"></label><label>Description<textarea name="description-${questionIndex}">${escapeValue(question.description)}</textarea></label><div class="admin-quiz-answers"></div>`;
+      const titleInput = section.querySelector("input");
+      titleInput.required = true;
+      titleInput.oninput = () => { question.title = titleInput.value; };
+      section.querySelector("textarea").oninput = event => { question.description = event.target.value; };
       const answers = section.querySelector(".admin-quiz-answers");
       question.answers.forEach((answer, answerIndex) => {
         const label = document.createElement("label");
@@ -119,20 +123,45 @@ document.addEventListener("DOMContentLoaded", async () => {
         const input = document.createElement("input");
         input.name = `answer-${questionIndex}-${answerIndex}`;
         input.value = answer.text;
-        label.appendChild(input);
+        input.required = true;
+        input.oninput = () => { answer.text = input.value; };
+        const scoring = document.createElement("select");
+        scoring.setAttribute("aria-label", `Skin type for answer ${answerIndex + 1}`);
+        ["", "dry", "normal", "oily", "combination", "sensitive"].forEach(type => {
+          const option = new Option(type || "No skin type score", type);
+          option.selected = (answer.type || "") === type;
+          scoring.add(option);
+        });
+        scoring.onchange = () => { if (scoring.value) answer.type = scoring.value; else delete answer.type; };
+        const concern = document.createElement("input");
+        concern.placeholder = "Concern (optional, e.g. acne)";
+        concern.setAttribute("aria-label", `Concern for answer ${answerIndex + 1}`);
+        concern.value = answer.concern || "";
+        concern.oninput = () => { answer.concern = concern.value.trim(); };
+        const remove = document.createElement("button");
+        remove.type = "button";
+        remove.textContent = "Remove answer";
+        remove.disabled = question.answers.length <= 1;
+        remove.onclick = () => { question.answers.splice(answerIndex, 1); renderAdminQuiz(); };
+        label.append(input, scoring, concern, remove);
         answers.appendChild(label);
       });
+      const addAnswer = document.createElement("button");
+      addAnswer.type = "button";
+      addAnswer.textContent = "Add Answer";
+      addAnswer.onclick = () => { question.answers.push({ text: "", type: "normal" }); renderAdminQuiz(); };
+      section.appendChild(addAnswer);
       const deleteQuestion = document.createElement("button");
       deleteQuestion.type = "button";
       deleteQuestion.className = "admin-quiz-delete";
       deleteQuestion.textContent = "Delete Question";
       deleteQuestion.onclick = () => {
         if (questions.length <= 1) return;
-        const removed = questions.splice(questionIndex, 1)[0];
+        const removed = questions[questionIndex];
         const removeSavedQuestion = removed.id
           ? authRequest(`/api/admin/quiz/${removed.id}`, { method: "DELETE" })
           : Promise.resolve();
-        removeSavedQuestion.then(renderAdminQuiz).catch(error => alert(error.message));
+        removeSavedQuestion.then(() => { questions.splice(questionIndex, 1); renderAdminQuiz(); }).catch(error => alert(error.message));
       };
       section.appendChild(deleteQuestion);
       form.appendChild(section);
@@ -144,13 +173,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     form.append(addQuestion, save);
     form.addEventListener("submit", async event => {
       event.preventDefault();
+      if (questions.some(question => !question.title.trim() || !question.answers.length || question.answers.some(answer => !answer.text.trim()))) {
+        save.textContent = "Please complete all questions and answers.";
+        return;
+      }
+      save.disabled = true;
       try {
         for (let i = 0; i < questions.length; i++) {
           const payload = { question_order: i, title: form.elements[`title-${i}`].value, description: form.elements[`description-${i}`].value, answers: questions[i].answers.map((answer, j) => ({ ...answer, text: form.elements[`answer-${i}-${j}`].value })), published: true };
-          await authRequest(`/api/admin/quiz${questions[i].id ? `/${questions[i].id}` : ""}`, { method: questions[i].id ? "PUT" : "POST", body: JSON.stringify(payload) });
+          const saved = await authRequest(`/api/admin/quiz${questions[i].id ? `/${questions[i].id}` : ""}`, { method: questions[i].id ? "PUT" : "POST", body: JSON.stringify(payload) });
+          questions[i].id = saved.id;
         }
-        save.textContent = "Saved";
+        save.textContent = "Questions saved.";
       } catch (error) { save.textContent = error.message; }
+      finally { save.disabled = false; }
     });
     container.appendChild(form);
 
