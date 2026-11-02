@@ -474,6 +474,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.error("Cart error:", error);
 
     list.textContent =
-      "Không thể tải giỏ hàng. Vui lòng thử lại.";
+      "Could not load your cart. Please try again.";
   }
 });

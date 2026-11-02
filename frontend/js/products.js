@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   } catch (error) {
     console.error("Could not load products:", error);
     emptyState.hidden = false;
-    resultCount.textContent = `Unable to load products: ${error.message}`;
+    resultCount.textContent = "Could not load products. Please try again.";
     return;
   }
 
@@ -437,7 +437,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           body: JSON.stringify(product)
         });
       } catch (error) {
-        message.textContent = `Could not save product: ${error.message}`;
+        message.textContent = error.message;
         saveButton.disabled = false;
         return;
       }
@@ -445,13 +445,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       form.reset();
       form.hidden = true;
       addButton.setAttribute("aria-expanded", "false");
-      status.textContent = "Product saved to SQLite.";
+      status.textContent = "Product saved.";
       try {
         const query = alertFilter ? `?issue=${encodeURIComponent(alertFilter)}` : "";
         products = (await authRequest(`/api/admin/products${query}`)).products;
         filterProducts();
       } catch (error) {
-        status.textContent = `Product saved, but the list could not refresh: ${error.message}`;
+        status.textContent = "Product saved. Please refresh the list.";
       }
       saveButton.disabled = false;
     });

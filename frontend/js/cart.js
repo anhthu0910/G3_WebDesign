@@ -38,7 +38,7 @@ function saveCart(cart) {
 
 // Thêm sản phẩm vào Cart
 function addToCart(productId) {
-  if (!CART_KEY) { cartReady.then(() => addToCart(productId)).catch(() => alert("Không thể mở giỏ hàng. Vui lòng tải lại trang.")); return; }
+  if (!CART_KEY) { cartReady.then(() => addToCart(productId)).catch(() => alert("Cart unavailable. Please refresh the page.")); return; }
   const cart = getCart();
   const id = String(productId);
 
