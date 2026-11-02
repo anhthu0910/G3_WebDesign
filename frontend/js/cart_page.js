@@ -275,6 +275,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       );
 
       buyButton.href = buyLink.href;
+      if (buyLink.affiliate) buyButton.dataset.affiliateProduct = product.id;
       buyButton.target = "_blank";
 
       buyButton.rel = buyLink.affiliate
@@ -421,7 +422,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   );
 
   window.addEventListener("storage", event => {
-    if (event.key === "glowguide_cart") {
+    if (event.key === CART_KEY || event.key === null) {
       renderCart();
     }
   });
@@ -473,6 +474,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.error("Cart error:", error);
 
     list.textContent =
-      "Unable to load products.json. Please check the file path.";
+      "Không thể tải giỏ hàng. Vui lòng thử lại.";
   }
 });
