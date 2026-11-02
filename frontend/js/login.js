@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }));
   document.getElementById("showPassword").addEventListener("change", event => { document.getElementById("password").type = event.target.checked ? "text" : "password"; });
   form.addEventListener("submit", async event => {
-    event.preventDefault(); button.disabled = true; message.textContent = "Đang đăng nhập...";
+    event.preventDefault(); button.disabled = true; message.textContent = "Signing in...";
     try { const data = await authRequest("/api/auth/login", { method: "POST", body: JSON.stringify({ identifier: document.getElementById("identifier").value.trim(), password: document.getElementById("password").value, role: roleInput.value }) }); window.location.href = data.user?.role === "admin" ? "admin_index.html" : "index.html"; }
     catch (error) { message.textContent = error.message; button.disabled = false; }
   });
