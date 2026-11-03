@@ -49,3 +49,9 @@
 @media (max-width: 1000px) { .home-chart-grid { grid-template-columns: 1fr 1fr; } .home-chart-panel:last-child { grid-column: 1 / -1; } }
 @media (max-width: 900px) { .home-overview-cards { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 600px) { .home-overview-grid, .home-chart-grid { grid-template-columns: 1fr; } .home-chart-panel:last-child { grid-column: auto; } .home-overview-cards { grid-template-columns: 1fr; } .home-overview-heading h1 { font-size: 30px; } .admin-home-overview { padding: 32px 5%; } }
+
+.home-chart-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.home-overview-card, .home-overview-panel { min-width: 0; box-sizing: border-box; }
+.home-overview-panel { overflow-x: auto; }
+@media (max-width: 1000px) { .home-chart-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px) { .home-chart-grid { grid-template-columns: 1fr; } }
