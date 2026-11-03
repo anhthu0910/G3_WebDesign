@@ -87,11 +87,11 @@ Group: 3
 Members: Le Ngoc Anh Thu, Nguyen Ngan An, Dao Ngoc Hien, Nguyen Truong Thanh Toan
 
 
-## Tri?n khai Render (c?ng t?n mi?n HTTPS)
+## Deployment on Render (supports HTTPS domains)
 
-C?u h?nh, k?t qu? ki?m th? v? h??ng d?n GitHub ? Render: [docs/RENDER.md](docs/RENDER.md).
+Configuration details, test results, and instructions for connecting GitHub to Render can be found here: [docs/RENDER.md](docs/RENDER.md).
 
 - Build: `pip install -r requirements.txt`
 - Start: `uvicorn backend.main:app --host 0.0.0.0 --port $PORT --workers 1 --proxy-headers --forwarded-allow-ips='*'`
-- Blueprint `render.yaml` d?ng service tr? ph? v?i persistent disk cho SQLite v? ?nh upload. Render Free ch? ph? h?p demo v?i d? li?u t?m th?i.
-- Kh?ng commit `.env`, database th?t, backup hay th?ng tin t?i kho?n. Seed ch? g?m 10 s?n ph?m.
+- Use the `render.yaml` Blueprint for the web service, including a persistent disk to store the SQLite database and uploaded image files. Render’s Free tier is intended for demonstration purposes only, with data being ephemeral (temporary).
+- Do not commit the `.env` file, the actual database, backups, or account credentials. The seed data includes only 10 products.
