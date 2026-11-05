@@ -67,6 +67,11 @@ def home():
     return RedirectResponse("/frontend/html/index.html", status_code=307)
 
 
+@app.get("/favicon.ico", include_in_schema=False)
+def favicon():
+    return FileResponse(FRONTEND_DIR / "images" / "favicon.svg", media_type="image/svg+xml")
+
+
 @app.get("/api/health")
 def health_check():
     return {"status": "ok"}

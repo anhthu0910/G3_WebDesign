@@ -220,6 +220,8 @@
 .product-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-auto-rows: 1fr;
+  align-items: stretch;
   gap: 22px;
 }
 
@@ -551,9 +553,12 @@
   -webkit-line-clamp: 2;
   line-clamp: 2;
   line-height: 1.3;
+  height: 2.6em;
   min-height: 2.6em;
   max-height: 2.6em;
   overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
   overflow-wrap: anywhere;
 }
 
@@ -785,11 +790,16 @@
 .admin-product-mode .product-card {
   display: flex;
   flex-direction: column;
+  height: 100%;
   min-width: 0;
 }
 
 .admin-product-mode .product-card>.product-image {
   flex-shrink: 0;
+}
+
+.admin-product-mode .product-info {
+  flex: 1;
 }
 
 .admin-product-mode .admin-product-actions {
