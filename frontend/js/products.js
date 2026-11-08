@@ -367,7 +367,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         <label>Brand<input name="brand"></label>
         <label>Category<input name="category"></label>
         <label>Price (VND)<input name="price" type="number" min="0" step="1"></label>
-        <label class="admin-create-full-width">Image URL or path<input name="image"></label>
         <label class="admin-create-full-width">Description<textarea name="description"></textarea></label>
         <label class="admin-create-full-width">Ingredients <small>Comma separated</small><textarea name="ingredients"></textarea></label>
         <label class="admin-create-full-width">Benefits <small>Comma separated</small><textarea name="benefits"></textarea></label>
@@ -377,6 +376,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         <label class="admin-create-full-width">Affiliate URL<input name="affiliate_url" type="url"></label>
         <label class="admin-create-full-width">Usage<textarea name="usage"></textarea></label>
         <label class="admin-create-full-width">Cautions<textarea name="cautions"></textarea></label>
+        <div class="admin-create-full-width admin-create-image-field">
+          <label>Product Image <small>Choose one method: paste a direct image URL or upload an image file.</small></label>
+          <label>Image URL<input name="image" type="url" placeholder="https://..."></label>
+          <label>Upload image file<input name="imageFile" type="file" accept="image/jpeg,image/png,image/webp"></label>
+          <img class="product-editor-preview" data-image-preview alt="Product image preview" hidden>
+        </div>
       </div>
       <p class="admin-create-product-message" aria-live="polite"></p>
       <div class="admin-create-product-actions">
@@ -387,6 +392,34 @@ document.addEventListener("DOMContentLoaded", async () => {
     productContent.prepend(form);
     productContent.prepend(addButton);
     addButton.after(status);
+
+    const imageAddress = form.elements.image;
+    const imageFileInput = form.elements.imageFile;
+    const imagePreview = form.querySelector("[data-image-preview]");
+    let previewObjectUrl = "";
+    const setImagePreview = (source, isObjectUrl = false) => {
+      if (previewObjectUrl) URL.revokeObjectURL(previewObjectUrl);
+      previewObjectUrl = isObjectUrl ? source : "";
+      imagePreview.hidden = !source;
+      if (source) imagePreview.src = source;
+      else imagePreview.removeAttribute("src");
+    };
+    imagePreview.addEventListener("error", () => {
+      imagePreview.hidden = true;
+    });
+    imageAddress.addEventListener("input", () => {
+      if (imageAddress.value.trim()) imageFileInput.value = "";
+      setImagePreview(imageAddress.value.trim());
+    });
+    imageFileInput.addEventListener("change", () => {
+      const file = imageFileInput.files[0];
+      if (file) {
+        imageAddress.value = "";
+        setImagePreview(URL.createObjectURL(file), true);
+      } else {
+        setImagePreview("");
+      }
+    });
 
     addButton.addEventListener("click", () => {
       form.hidden = !form.hidden;
@@ -399,6 +432,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
     form.querySelector("[data-cancel]").addEventListener("click", () => {
       form.reset();
+      setImagePreview("");
       form.hidden = true;
       addButton.setAttribute("aria-expanded", "false");
       status.textContent = "";
@@ -429,10 +463,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         cautions: String(data.get("cautions") || "").trim(),
         visible: true
       };
+      const imageFile = data.get("imageFile");
       saveButton.disabled = true;
       message.textContent = "";
+      let createdProduct;
       try {
-        await authRequest("/api/admin/products", {
+        createdProduct = await authRequest("/api/admin/products", {
           method: "POST",
           body: JSON.stringify(product)
         });
@@ -442,16 +478,35 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
       }
 
+      let uploadError;
+      if (imageFile.size > 0) {
+        const upload = new FormData();
+        upload.append("file", imageFile);
+        try {
+          await authRequest(`/api/admin/products/${createdProduct.id}/image`, {
+            method: "POST",
+            body: upload
+          });
+        } catch (error) {
+          uploadError = error;
+        }
+      }
+
       form.reset();
+      setImagePreview("");
       form.hidden = true;
       addButton.setAttribute("aria-expanded", "false");
-      status.textContent = "Product saved.";
+      status.textContent = uploadError
+        ? `Product saved, but image upload failed: ${uploadError.message}`
+        : "Product saved.";
       try {
         const query = alertFilter ? `?issue=${encodeURIComponent(alertFilter)}` : "";
         products = (await authRequest(`/api/admin/products${query}`)).products;
         filterProducts();
       } catch (error) {
-        status.textContent = "Product saved. Please refresh the list.";
+        status.textContent = uploadError
+          ? `Product saved, but image upload failed: ${uploadError.message}. Please refresh the list.`
+          : "Product saved. Please refresh the list.";
       }
       saveButton.disabled = false;
     });

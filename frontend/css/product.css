@@ -302,6 +302,23 @@
   grid-column: 1 / -1;
 }
 
+.admin-create-image-field {
+  display: grid;
+  gap: 10px;
+}
+
+.admin-create-image-field label {
+  display: grid;
+  gap: 6px;
+  color: #725966;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.admin-create-image-field small {
+  font-weight: 400;
+}
+
 .admin-create-product-message {
   color: #8c5362;
 }
@@ -412,6 +429,10 @@
   border: 1px solid #e3c4cf;
   border-radius: 8px;
   background: #fff8fa;
+}
+
+.product-editor-preview[hidden] {
+  display: none;
 }
 
 .product-editor-actions {
