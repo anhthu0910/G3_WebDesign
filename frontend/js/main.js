@@ -1,7 +1,45 @@
 
 document.addEventListener("DOMContentLoaded", () => {
   console.log("GlowGuide website initialized!");
+  const navbar = document.querySelector(".navbar");
+  const nav = navbar?.querySelector("nav");
 
+  if (navbar && nav) {
+    const toggle = document.createElement("button");
+
+    toggle.type = "button";
+    toggle.className = "nav-menu-toggle";
+    toggle.textContent = "☰";
+    toggle.setAttribute("aria-label", "Toggle navigation");
+    toggle.setAttribute("aria-expanded", "false");
+    toggle.setAttribute("aria-controls", "mainNavigation");
+
+    nav.id = "mainNavigation";
+    navbar.insertBefore(toggle, navbar.firstElementChild);
+
+    toggle.addEventListener("click", () => {
+      const isOpen = nav.classList.toggle("nav-open");
+
+      toggle.textContent = isOpen ? "✕" : "☰";
+      toggle.setAttribute("aria-expanded", String(isOpen));
+    });
+
+    nav.addEventListener("click", event => {
+      if (event.target.closest("a")) {
+        nav.classList.remove("nav-open");
+        toggle.textContent = "☰";
+        toggle.setAttribute("aria-expanded", "false");
+      }
+    });
+
+    document.addEventListener("click", event => {
+      if (!navbar.contains(event.target)) {
+        nav.classList.remove("nav-open");
+        toggle.textContent = "☰";
+        toggle.setAttribute("aria-expanded", "false");
+      }
+    });
+  }
   const currentPage =
     window.location.pathname.split("/").pop() || "index.html";
 

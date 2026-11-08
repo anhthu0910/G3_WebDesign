@@ -20,12 +20,23 @@ body {
 }
 
 .navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 22px 8%;
+
+  padding: 16px 8%;
   background: white;
   gap: 20px;
+
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+}
+
+.nav-menu-toggle {
+  display: none;
 }
 
 .logo {
@@ -522,4 +533,92 @@ footer {
   background: #fff0f4;
   border-color: #d9a5b5;
   color: #aa6179;
+}
+
+/* ==========================================
+   RESPONSIVE STICKY NAVIGATION
+========================================== */
+
+@media (max-width: 768px) {
+  .navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+
+    padding: 12px 5%;
+    gap: 14px;
+  }
+
+  .nav-menu-toggle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+
+    border: 1px solid #f1d7df;
+    border-radius: 10px;
+
+    background: white;
+    color: #a7607a;
+
+    font-size: 22px;
+    cursor: pointer;
+  }
+
+  .navbar .logo {
+    font-size: 23px;
+  }
+
+  .navbar nav {
+    display: none;
+
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+
+    gap: 0;
+    padding: 10px 5% 16px;
+
+    background: white;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.08);
+
+    border-top: 1px solid #f1e4e4;
+  }
+
+  .navbar nav.nav-open {
+    display: flex;
+  }
+
+  .navbar nav a,
+  .navbar nav span {
+    display: block;
+    padding: 12px 8px;
+  }
+
+  .navbar nav #accountArea {
+    padding: 0;
+  }
+
+  .navbar nav #accountArea a,
+  .navbar nav #accountArea button,
+  .navbar nav #accountArea span {
+    display: block;
+    padding: 12px 8px;
+  }
+
+  .navbar nav #accountArea button {
+    margin: 0 8px;
+  }
 }
