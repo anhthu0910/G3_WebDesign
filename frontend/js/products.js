@@ -217,15 +217,88 @@ document.addEventListener("DOMContentLoaded", async () => {
   async function editProduct(product) {
     const modal = document.createElement("div");
     modal.className = "product-editor-overlay";
-    modal.innerHTML = `<form class="product-editor"><h2>Edit Product</h2><label>Name<input name="name" required></label><label>Brand<input name="brand"></label><label>Category<input name="category"></label><label>Price<input name="price" type="number" min="0"></label><label>Description<textarea name="description"></textarea></label><label>Ingredients <small>comma separated</small><textarea name="ingredients"></textarea></label><label>Benefits <small>comma separated</small><textarea name="benefits"></textarea></label><label>Skin types <small>comma separated</small><input name="skinTypes"></label><label>Concerns <small>comma separated</small><input name="concerns"></label><label>Usage<textarea name="usage"></textarea></label><label>Cautions<textarea name="cautions"></textarea></label><label>Product URL<input name="product_url"></label><label>Affiliate URL<input name="affiliate_url"></label><label>Replace image<input name="imageFile" type="file" accept="image/jpeg,image/png,image/webp"><img class="product-editor-preview" data-image-preview alt="Image preview"></label><div class="product-editor-actions"><button type="submit">Save changes</button><button type="button" data-close>Cancel</button></div></form>`;
+    modal.innerHTML = `<form class="product-editor"><h2>Edit Product</h2>
+      <label>Name<input name="name" required></label>
+      <label>Brand<input name="brand"></label>
+      <label>Category<input name="category"></label>
+      <label>Price<input name="price" type="number" min="0"></label>
+      <label>Description<textarea name="description"></textarea></label>
+      <label>Ingredients <small>comma separated</small><textarea name="ingredients"></textarea></label>
+      <label>Benefits <small>comma separated</small><textarea name="benefits"></textarea></label>
+      <label>Skin types <small>comma separated</small><input name="skinTypes"></label>
+      <label>Concerns <small>comma separated</small><input name="concerns"></label>
+      <label>Usage<textarea name="usage"></textarea></label>
+      <label>Cautions<textarea name="cautions"></textarea></label>
+      <label>Product URL<input name="product_url"></label>
+      <label>Affiliate URL<input name="affiliate_url"></label>
+      <div class="product-editor-image-field">
+        <label>Replace image</label>
+
+        <div class="admin-create-image-options">
+          <label class="admin-create-image-url">
+            <input name="image" type="url" placeholder="Paste image URL">
+          </label>
+
+          <span class="admin-create-image-or">or</span>
+
+          <label class="admin-create-image-upload">
+            <input name="imageFile" type="file"
+              accept="image/jpeg,image/png,image/webp">
+          </label>
+        </div>
+
+        <img class="product-editor-preview"
+          data-image-preview alt="Image preview">
+      </div>
+      <div class="product-editor-actions"><button type="submit">Save changes</button><button type="button" data-close>Cancel</button></div></form>`;
     document.body.appendChild(modal);
     const form = modal.querySelector("form");
     const values = { ...product, ingredients: (product.ingredients || []).join(", "), benefits: (product.benefits || []).join(", "), skinTypes: (product.skinTypes || []).join(", "), concerns: (product.concerns || []).join(", ") };
     Object.entries(values).forEach(([key, value]) => { if (form.elements[key]) form.elements[key].value = value ?? ""; });
+    const imageAddress = form.elements.image;
     const imageFile = form.elements.imageFile;
     const preview = form.querySelector("[data-image-preview]");
-    if (product.image) preview.src = product.image;
-    imageFile.addEventListener("change", () => { const file = imageFile.files[0]; if (file) preview.src = URL.createObjectURL(file); });
+
+    let previewObjectUrl = "";
+
+    const setPreview = (source, isObjectUrl = false) => {
+      if (previewObjectUrl) {
+        URL.revokeObjectURL(previewObjectUrl);
+      }
+
+      previewObjectUrl = isObjectUrl ? source : "";
+
+      if (source) {
+        preview.src = source;
+        preview.hidden = false;
+      } else {
+        preview.removeAttribute("src");
+        preview.hidden = true;
+      }
+    };
+
+    // Display current product image
+    imageAddress.value = product.image || "";
+    setPreview(product.image || "");
+
+    // When URL is entered, clear selected file
+    imageAddress.addEventListener("input", () => {
+      if (imageAddress.value.trim()) {
+        imageFile.value = "";
+      }
+
+      setPreview(imageAddress.value.trim());
+    });
+
+    // When file is selected, clear URL
+    imageFile.addEventListener("change", () => {
+      const file = imageFile.files[0];
+
+      if (file) {
+        imageAddress.value = "";
+        setPreview(URL.createObjectURL(file), true);
+      }
+    });
     modal.querySelector("[data-close]").onclick = () => modal.remove();
     form.onsubmit = async event => { event.preventDefault(); const data = new FormData(form); const updated = { ...product, ...Object.fromEntries(data.entries()), price: Number(data.get("price")) || null, ingredients: data.get("ingredients").split(",").map(x => x.trim()).filter(Boolean), benefits: data.get("benefits").split(",").map(x => x.trim()).filter(Boolean), skinTypes: data.get("skinTypes").split(",").map(x => x.trim()).filter(Boolean), concerns: data.get("concerns").split(",").map(x => x.trim()).filter(Boolean), visible: product.visible !== false }; delete updated.id; delete updated.currency; delete updated.imageFile; try { await adminRequest(`/products/${product.id}`, { method: "PUT", body: JSON.stringify(updated) }); if (imageFile.files[0]) { const upload = new FormData(); upload.append("file", imageFile.files[0]); const result = await adminRequest(`/products/${product.id}/image`, { method: "POST", body: upload, headers: {} }); updated.image = result.image; } modal.remove(); Object.assign(product, updated); filterProducts(); } catch (error) { alert(error.message); } };
   }
@@ -378,8 +451,17 @@ document.addEventListener("DOMContentLoaded", async () => {
         <label class="admin-create-full-width">Cautions<textarea name="cautions"></textarea></label>
         <div class="admin-create-full-width admin-create-image-field">
           <label>Product Image <small>Choose one method: paste a direct image URL or upload an image file.</small></label>
-          <label>Image URL<input name="image" type="url" placeholder="https://..."></label>
-          <label>Upload image file<input name="imageFile" type="file" accept="image/jpeg,image/png,image/webp"></label>
+          <div class="admin-create-image-options">
+            <label class="admin-create-image-url">
+              <input name="image" type="url" placeholder="https://...">
+            </label>
+
+            <span class="admin-create-image-or">or</span>
+
+            <label class="admin-create-image-upload">
+              <input name="imageFile" type="file" accept="image/jpeg,image/png,image/webp">
+            </label>
+          </div>
           <img class="product-editor-preview" data-image-preview alt="Product image preview" hidden>
         </div>
       </div>
