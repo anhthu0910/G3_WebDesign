@@ -1,4 +1,99 @@
-# Triển khai GlowGuide trên Render
+# Chạy local và triển khai GlowGuide trên Render
+
+## Chạy local từ máy mới
+
+Ứng dụng dùng Python/FastAPI để phục vụ cả website và API. Không cần cài Node.js, không mở file HTML trực tiếp bằng `file://` và không dùng Live Server làm web server.
+
+### 1. Cài Python và mở đúng thư mục dự án
+
+Cài Python 3.12 (64-bit) và Git nếu máy chưa có. Trên Windows, chọn thêm Python vào `PATH` khi cài. Mở PowerShell tại thư mục gốc `G3_WebDesign` — thư mục có `requirements.txt` và `backend\main.py` — rồi kiểm tra:
+
+```powershell
+py -3.12 --version
+Test-Path .\backend\main.py
+```
+
+Lệnh thứ hai phải trả về `True`. Nếu `py` không được nhận diện, cài Python 3.12 từ python.org, mở PowerShell mới và thử `python --version`; dùng lệnh `python` thay cho `py -3.12` ở các bước dưới đây nếu phiên bản là 3.12.
+
+### 2. Tạo môi trường riêng và cài dependencies
+
+Chạy tại thư mục gốc dự án:
+
+```powershell
+py -3.12 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+python -m pip install -r requirements-dev.txt
+```
+
+Nếu PowerShell chặn kích hoạt môi trường, chỉ cho phép script trong cửa sổ hiện tại rồi kích hoạt lại:
+
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.\.venv\Scripts\Activate.ps1
+```
+
+Khi kích hoạt thành công, đầu dòng lệnh có tiền tố `(.venv)`. Cần cài lại dependencies sau khi clone dự án trên máy khác; môi trường `.venv` không nằm trong Git.
+
+### 3. Khởi động website
+
+```powershell
+python -m uvicorn backend.main:app --reload --host 127.0.0.1 --port 8000
+```
+
+Giữ cửa sổ này mở trong lúc sử dụng. Khi thấy Uvicorn báo đang chạy tại `http://127.0.0.1:8000`, mở:
+
+- Website: <http://127.0.0.1:8000/>
+- Sức khỏe API: <http://127.0.0.1:8000/api/health>
+- Danh sách sản phẩm: <http://127.0.0.1:8000/api/products>
+- Tài liệu API khi chạy local: <http://127.0.0.1:8000/docs>
+
+Lần chạy đầu tự tạo `data/glowguide.db` và `data/uploads`, sau đó nạp seed 10 sản phẩm. Database và dữ liệu runtime bị Git bỏ qua; không cần cài SQLite riêng. Nếu đã có database, ứng dụng dùng lại database đó.
+
+Để kiểm tra nhanh trong một cửa sổ PowerShell khác:
+
+```powershell
+(Invoke-RestMethod http://127.0.0.1:8000/api/health).status
+(Invoke-RestMethod http://127.0.0.1:8000/api/products).products.Count
+```
+
+Kết quả mong đợi lần lượt là `ok` và số lượng sản phẩm lớn hơn 0.
+
+### 4. Chạy kiểm thử
+
+Mở PowerShell thứ hai tại thư mục gốc dự án, kích hoạt cùng môi trường ảo rồi chạy:
+
+```powershell
+.\.venv\Scripts\Activate.ps1
+python -m unittest discover -s tests -v
+```
+
+Kết quả thành công kết thúc với `OK`. Bộ test dùng database kiểm thử riêng và mock các lời gọi AI; không cần cấu hình Gemini API key. Nếu PowerShell chặn kích hoạt, dùng cách `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass` ở bước 2.
+
+### macOS/Linux
+
+Tại thư mục gốc dự án, dùng Python 3.12 thay cho lệnh `py` và lệnh activate tương ứng:
+
+```sh
+python3.12 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -r requirements-dev.txt
+python -m uvicorn backend.main:app --reload --host 127.0.0.1 --port 8000
+```
+
+Trong terminal khác, kích hoạt lại `.venv` rồi chạy `python -m unittest discover -s tests -v`.
+
+### AI Consultant (tùy chọn)
+
+Các trang, API sản phẩm và bộ kiểm thử chạy được mà không cần Gemini API key. Để dùng AI thật, sao chép `.env.example` thành `.env`, điền `GEMINI_API_KEY` cùng các model ID Gemini khả dụng vào `GEMINI_MODELS`, rồi khởi động lại server. Không chia sẻ hoặc commit `.env`. Nếu chưa cấu hình key, riêng chức năng AI sẽ không hoạt động.
+
+### Nếu không mở được website
+
+- Đảm bảo terminal đang ở thư mục gốc dự án và môi trường `(.venv)` đã được kích hoạt.
+- Nếu thấy `No module named uvicorn` hoặc thiếu package, chạy lại `python -m pip install -r requirements-dev.txt` trong đúng môi trường ảo.
+- Nếu cổng 8000 đang được dùng, đổi `--port 8001` rồi mở <http://127.0.0.1:8001/>.
+- Xem lỗi trong terminal đang chạy Uvicorn; website chỉ hoạt động khi tiến trình này còn chạy.
 
 Chạy mọi lệnh từ thư mục gốc `G3_WebDesign`; không đặt Root Directory thành `backend`.
 
@@ -72,21 +167,6 @@ Lệnh dùng SQLite backup API và kiểm tra integrity. Backup ở cạnh datab
 Phương án mở rộng: PostgreSQL được quản lý cho database; S3/R2 hoặc Cloudinary cho ảnh. Chưa tích hợp các dịch vụ này vì cần tài khoản/cấu hình ngoài và chuyển đổi SQL/migration để giữ dữ liệu an toàn. Không chỉ đổi `DATABASE_PATH` sang URL PostgreSQL: driver hiện tại là SQLite.
 
 Render xác nhận filesystem tạm thời tại [Deploys](https://render.com/docs/deploys), giới hạn Free tại [Deploy for Free](https://render.com/docs/free), cấu hình disk tại [Persistent Disks](https://render.com/docs/disks).
-
-## Chạy local và kiểm thử
-
-```sh
-pip install -r requirements-dev.txt
-uvicorn backend.main:app --reload
-```
-
-Mở `http://127.0.0.1:8000/`. Giữ `APP_ENV=development` cho HTTP local. Frontend nay nên chạy qua FastAPI để API tương đối cùng origin hoạt động; không mở HTML bằng `file://` hoặc dùng Live Server làm server chính.
-
-```sh
-python -m unittest discover -s tests -v
-```
-
-Tests tạo database riêng trong `data/test-<uuid>/`, không dùng DB thật và không gọi Gemini thật. Các thư mục này bị Git bỏ qua; có thể giữ để kiểm tra sau test. Kiểm tra fallback dùng mock hai model: model đầu lỗi 503, model sau thành công.
 
 ## Kết quả thực tế ngày 30/10/2026
 
