@@ -79,7 +79,8 @@ nav a:hover {
   align-items: center;
   gap: 50px;
   padding: 70px 8%;
-  background: linear-gradient(120deg, #fff8f4, #fbe4e7);
+  background: linear-gradient(to right, rgba(251, 228, 231, 0.95) 0%, rgba(251, 228, 231, 0.6) 45%, rgba(251, 228, 231, 0) 75%), 
+              url('../images/2476919.jpg') center/cover no-repeat;
 }
 
 .hero-content {

@@ -8,18 +8,41 @@
 
 .chat-intro {
   text-align: center;
-  padding: 48px 20px;
-  background: linear-gradient(120deg, #fff8f4, #fbe4e7);
+  padding: 65px 20px;
+  color: #ffffff;
+  width: 100%;
+  margin: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), 
+              url('../images/2476919.jpg') center/cover no-repeat;
+}
+
+.chat-intro .tag,
+.chat-intro h1,
+.chat-intro p {
+  color: #ffffff;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+}
+
+.chat-intro .tag {
+  display: inline-block;
+  font-size: 13px;
+  letter-spacing: 1.5px;
+  margin-bottom: 8px;
+  opacity: 0.95;
 }
 
 .chat-intro h1 {
-  font-size: clamp(32px, 4vw, 46px);
-  margin: 14px 0;
+  font-size: clamp(32px, 4vw, 48px);
+  margin: 15px 0;
 }
 
 .chat-intro p {
-  color: #786b6c;
+  color: rgba(255, 255, 255, 0.9);
   line-height: 1.7;
+  max-width: 700px;
+  margin: 0 auto;
 }
 
 /* ===== LAYOUT ===== */

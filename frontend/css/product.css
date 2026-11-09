@@ -7,7 +7,16 @@
 .products-hero {
   text-align: center;
   padding: 65px 20px;
-  background: linear-gradient(120deg, #fff8f4, #fbe4e7);
+  color: #ffffff; /* Đổi màu chữ mặc định của cả khối thành trắng */
+  
+  background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), 
+            url('../images/2476919.jpg') center/cover no-repeat;
+}
+
+.products-hero span,
+.products-hero .subtitle,
+.products-hero h1 {
+  color: #ffffff;
 }
 
 .products-hero h1 {
@@ -16,11 +25,15 @@
 }
 
 .products-hero p {
-  color: #786b6c;
+  color: rgba(255, 255, 255, 0.9); /* Trắng nhẹ 90% cho đoạn mô tả nhìn mềm mại hơn */
   line-height: 1.7;
 }
 
-
+.products-hero h1,
+.products-hero p,
+.products-hero span {
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+}
 /* ==========================================
    MAIN LAYOUT
 ========================================== */
