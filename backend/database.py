@@ -2,9 +2,8 @@
 import json
 import sqlite3
 from contextlib import contextmanager
-from pathlib import Path
 
-from backend.config import BASE_DIR, DATA_DIR, DB_PATH
+from backend.config import BASE_DIR, DB_PATH
 
 JSON_PATH = BASE_DIR / "data" / "products.seed.json"
 
@@ -73,6 +72,10 @@ def init_database():
             CREATE INDEX IF NOT EXISTS idx_sessions_user_id
             ON sessions(user_id)
         """)
+        conn.execute("""CREATE TABLE IF NOT EXISTS user_profiles (
+            user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+            skin_profile TEXT, quiz_result TEXT
+        )""")
 
         conn.execute("""
             CREATE INDEX IF NOT EXISTS idx_sessions_expires_at
