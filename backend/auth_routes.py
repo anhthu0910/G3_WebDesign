@@ -4,6 +4,7 @@ from pydantic import BaseModel, Field, field_validator
 from typing import Literal
 
 from backend.services.auth_service import authenticate_user, create_session, create_user, delete_session, get_session_user, SESSION_DAYS
+from backend.services.auth_service import AccountLockedError
 
 router = APIRouter(prefix="/api/auth")
 admin_router = APIRouter(prefix="/api/admin")
@@ -48,7 +49,10 @@ def register(request: RegisterRequest):
 
 @router.post("/login")
 def login(request: LoginRequest, response: Response):
-    user = authenticate_user(request.identifier, request.password, request.role)
+    try:
+        user = authenticate_user(request.identifier, request.password, request.role)
+    except AccountLockedError:
+        raise HTTPException(status_code=403, detail="account_locked")
     if user is None:
         raise HTTPException(status_code=401, detail="Invalid credentials")
     token, _ = create_session(user["id"])
