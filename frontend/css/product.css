@@ -472,7 +472,6 @@
 }
 
 .admin-product-mode .product-buttons,
-.admin-product-mode .product-cart-icon-btn,
 .admin-product-mode .product-cart-btn {
   display: none;
 }
@@ -640,63 +639,18 @@
   background: #bf7588;
 }
 
-.ai-btn {
+.buy-btn {
   background: #fff0f1;
   color: #b36e80;
 }
 
-.ai-btn:hover {
+.buy-btn:hover {
   background: #fbe2e8;
 }
 
-
-/* ==========================================
-   CART BUTTON
-   (Keep existing functionality)
-========================================== */
-
-.product-cart-icon-btn {
-  position: absolute;
-
-  top: 14px;
-  right: 14px;
-  z-index: 5;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  width: 39px;
-  height: 39px;
-
-  border: 1px solid #f1d7df;
-  border-radius: 50%;
-
-  background: rgba(255, 255, 255, 0.96);
-
-  color: #b97b8d;
-
-  font-size: 26px;
-  line-height: 1;
-
-  cursor: pointer;
-  transition: 0.2s ease;
-}
-
-.product-cart-icon-btn:hover {
-  background: #fff0f4;
-  transform: scale(1.08);
-}
-
-.product-cart-icon-btn.active {
-  color: #dc547c;
-  background: #fff0f4;
-  border-color: #efb6c8;
-}
-
-.product-cart-icon-btn:focus-visible {
-  outline: 3px solid #b96b84;
-  outline-offset: 3px;
+.buy-btn[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 
@@ -729,10 +683,6 @@
 
 .product-cart-btn:hover {
   background: #a6647c;
-}
-
-.product-cart-icon-btn {
-  display: none;
 }
 
 .product-cart-btn.added {

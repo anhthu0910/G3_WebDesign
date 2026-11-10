@@ -2,6 +2,10 @@
 document.addEventListener("DOMContentLoaded", async () => {
   let products = [];
   let alertFilter = "";
+  let cartButtonUpdates = [];
+  window.addEventListener("glowguide:cartchanged", () => {
+    cartButtonUpdates.forEach(update => update());
+  });
   const productGrid = document.getElementById("productGrid");
   const searchInput = document.getElementById("searchInput");
   const sortSelect = document.getElementById("sortSelect");
@@ -21,30 +25,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   try {
     if (isAdmin) {
-      window.isAdminProductMode = true;
       document.body.classList.add("admin-product-mode");
       alertFilter = supportedAlerts.has(requestedAlert) ? requestedAlert : "";
       const query = alertFilter ? `?issue=${encodeURIComponent(alertFilter)}` : "";
       products = (await authRequest(`/api/admin/products${query}`)).products;
     } else {
-      // Read the current public catalog from the same-origin API.
-      const catalogUrls = [
-        "/api/products"
-      ];
-      let catalog;
-      let lastError;
-
-      for (const url of catalogUrls) {
-        try {
-          const response = await fetch(url);
-          if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
-          catalog = await response.json();
-          break;
-        } catch (error) {
-          lastError = error;
-        }
-      }
-      if (!catalog) throw lastError || new Error("Catalog unavailable");
+      const response = await fetch("/api/products");
+      if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
+      const catalog = await response.json();
       products = Array.isArray(catalog) ? catalog : catalog.products;
       if (!Array.isArray(products)) throw new Error("Invalid catalog format");
     }
@@ -129,39 +117,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       `product_detail.html?id=${encodeURIComponent(product.id)}`;
     detailLink.textContent = "View Details";
 
-    const aiLink = document.createElement("a");
-    aiLink.className = "ai-btn";
-    aiLink.href =
-      `ai_consultant.html?product=${encodeURIComponent(product.id)}`;
-    aiLink.textContent = "Ask AI";
-
-    buttons.append(detailLink, aiLink);
+    const buyLink = createPurchaseLink(product, "buy-btn");
+    buttons.append(detailLink, buyLink);
     info.append(brand, name, category, price, buttons);
     card.append(image, info);
-
-    const cartIconButton = document.createElement("button");
-    cartIconButton.type = "button";
-    cartIconButton.className = "product-cart-icon-btn";
-
-    function updateCartButton() {
-      const saved = getCart().some(item => String(item.id) === String(product.id));
-      cartIconButton.textContent = saved ? "In Cart" : "Add to Cart";
-      cartIconButton.setAttribute(
-        "aria-label",
-        saved ? "Remove from Cart" : "Add to Cart"
-      );
-      cartIconButton.setAttribute("aria-pressed", String(saved));
-    }
-
-    cartIconButton.addEventListener("click", (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-      addToCart(product.id);
-      updateCartButton();
-    });
-
-    updateCartButton();
-    card.appendChild(cartIconButton);
 
     const cartButton = document.createElement("button");
     cartButton.type = "button";
@@ -188,11 +147,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       updateCartButtonState();
     });
 
-    window.addEventListener("glowguide:cartchanged", updateCartButtonState);
+    cartButtonUpdates.push(updateCartButtonState);
     updateCartButtonState();
     card.appendChild(cartButton);
 
-    if (window.isAdminProductMode) {
+    if (isAdmin) {
       const adminActions = document.createElement("div");
       adminActions.className = "admin-product-actions";
       const editButton = document.createElement("button");
@@ -320,6 +279,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   function renderProducts(productList) {
+    cartButtonUpdates = [];
     productGrid.replaceChildren();
 
     productList.forEach(product => {

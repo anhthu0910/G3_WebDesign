@@ -298,11 +298,11 @@ nav a:hover {
   text-align: center;
 }
 
-.featured-products .product-card>a:not(.home-ai-link) {
+.featured-products .product-card>a:not(.home-buy-link) {
   grid-column: 1;
 }
 
-.featured-products .product-card>.home-ai-link {
+.featured-products .product-card>.home-buy-link {
   grid-column: 2;
   margin-left: 0;
 }
@@ -341,10 +341,15 @@ nav a:hover {
   font-size: 14px;
 }
 
-.home-ai-link {
+.home-buy-link {
   margin-left: 8px;
   background: #fff0f2;
   color: #a7607a;
+}
+
+.home-buy-link[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .view-all-btn {

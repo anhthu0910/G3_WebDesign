@@ -1,6 +1,38 @@
 
+function getPurchaseUrl(product) {
+  for (const field of ["affiliate_url", "product_url"]) {
+    if (typeof product[field] !== "string" || !product[field].trim()) continue;
+    try {
+      const url = new URL(product[field]);
+      if (!["http:", "https:"].includes(url.protocol)) continue;
+      return { href: url.href, affiliate: field === "affiliate_url" };
+    } catch { /* Try the next purchase URL. */ }
+  }
+  return null;
+}
+
+function createPurchaseLink(product, className) {
+  const link = document.createElement("a");
+  link.className = className;
+  link.textContent = "Buy Now";
+  const purchase = getPurchaseUrl(product);
+  if (purchase) {
+    link.href = purchase.href;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    if (purchase.affiliate) {
+      link.rel += " sponsored nofollow";
+      link.dataset.affiliateProduct = product.id;
+    }
+    return link;
+  }
+
+  link.setAttribute("aria-disabled", "true");
+  link.title = "Purchase link unavailable";
+  return link;
+}
+
 document.addEventListener("DOMContentLoaded", () => {
-  console.log("GlowGuide website initialized!");
   const navbar = document.querySelector(".navbar");
   const nav = navbar?.querySelector("nav");
 
@@ -57,17 +89,33 @@ document.addEventListener("DOMContentLoaded", async () => {
   const container = document.querySelector(".featured-products .product-list");
   if (!container) return;
 
+  function updateHomeCartButtons() {
+    const ids = new Set(getCart().map(item => String(item.id)));
+    container.querySelectorAll(".home-cart-btn[data-product-id]").forEach(button => {
+      const isAdded = ids.has(button.dataset.productId);
+      button.textContent = isAdded ? "Added to Cart" : "Add to Cart";
+      button.classList.toggle("added", isAdded);
+      button.setAttribute("aria-pressed", String(isAdded));
+    });
+  }
+
+  container.addEventListener("click", event => {
+    const button = event.target.closest(".home-cart-btn[data-product-id]");
+    if (!button) return;
+    event.preventDefault();
+    event.stopPropagation();
+    const id = button.dataset.productId;
+    if (getCart().some(item => String(item.id) === id)) removeFromCart(id);
+    else addToCart(id);
+    updateHomeCartButtons();
+  });
+  window.addEventListener("glowguide:cartchanged", updateHomeCartButtons);
+  updateHomeCartButtons();
+
   try {
-    const urls = ["/api/products"];
-    let data;
-    for (const url of urls) {
-      const response = await fetch(url);
-      if (response.ok) {
-        data = await response.json();
-        break;
-      }
-    }
-    if (!data) throw new Error("Cannot load products.json");
+    const response = await fetch("/api/products");
+    if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
+    const data = await response.json();
     const products = Array.isArray(data) ? data : data.products;
     if (!Array.isArray(products)) throw new Error("Invalid product data");
 
@@ -93,39 +141,16 @@ document.addEventListener("DOMContentLoaded", async () => {
       const link = document.createElement("a");
       link.href = `product_detail.html?id=${encodeURIComponent(product.id)}`;
       link.textContent = "View Analysis";
-      const aiLink = document.createElement("a");
-      aiLink.href = `ai_consultant.html?product=${encodeURIComponent(product.id)}`;
-      aiLink.className = "home-ai-link";
-      aiLink.textContent = "Ask AI";
+      const buyLink = createPurchaseLink(product, "home-buy-link");
       const cartButton = document.createElement("button");
       cartButton.type = "button";
       cartButton.className = "home-cart-btn";
 
-      function updateHomeCartButton() {
-        const isAdded = getCart().some(
-          item => String(item.id) === String(product.id)
-        );
-        cartButton.textContent = isAdded ? "Added to Cart" : "Add to Cart";
-        cartButton.classList.toggle("added", isAdded);
-        cartButton.setAttribute("aria-pressed", String(isAdded));
-      }
-
-      cartButton.addEventListener("click", event => {
-        event.preventDefault();
-        event.stopPropagation();
-        const isAdded = getCart().some(
-          item => String(item.id) === String(product.id)
-        );
-        if (isAdded) removeFromCart(product.id);
-        else addToCart(product.id);
-        updateHomeCartButton();
-      });
-
-      window.addEventListener("glowguide:cartchanged", updateHomeCartButton);
-      updateHomeCartButton();
-      card.append(media, brand, name, link, aiLink, cartButton);
+      cartButton.dataset.productId = product.id;
+      card.append(media, brand, name, link, buyLink, cartButton);
       container.appendChild(card);
     });
+    updateHomeCartButtons();
   } catch (error) {
     console.error("Featured products error:", error);
   }
@@ -163,35 +188,4 @@ document.addEventListener("DOMContentLoaded", () => {
       window.location.href = `products.html${query ? `?${query}` : ""}`;
     });
   }
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-  const cartButtons = document.querySelectorAll(
-    ".featured-products .home-cart-btn[data-product-id]"
-  );
-  if (!cartButtons.length) return;
-
-  const updateCartButtons = () => {
-    cartButtons.forEach(button => {
-      const isAdded = getCart().some(
-        item => String(item.id) === button.dataset.productId
-      );
-      button.textContent = isAdded ? "Added to Cart" : "Add to Cart";
-      button.classList.toggle("added", isAdded);
-      button.setAttribute("aria-pressed", String(isAdded));
-    });
-  };
-
-  cartButtons.forEach(button => {
-    button.addEventListener("click", () => {
-      const id = button.dataset.productId;
-      const isAdded = getCart().some(item => String(item.id) === id);
-      if (isAdded) removeFromCart(id);
-      else addToCart(id);
-      updateCartButtons();
-    });
-  });
-
-  window.addEventListener("glowguide:cartchanged", updateCartButtons);
-  updateCartButtons();
 });
