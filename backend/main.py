@@ -9,8 +9,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from typing import Literal
 from google.genai.errors import ServerError
-from backend.auth_routes import router as auth_router, admin_router
+from backend.auth_routes import router as auth_router, admin_router, COOKIE_NAME
+from backend.services.auth_service import get_session_user
 from backend.admin_routes import router as admin_management_router
+from backend.user_routes import router as user_router
 from backend.database import init_database
 
 from backend.services.ai_service import generate_skincare_reply
@@ -27,6 +29,7 @@ import_products_from_json()
 app.include_router(auth_router)
 app.include_router(admin_router)
 app.include_router(admin_management_router)
+app.include_router(user_router)
 
 # Allow frontend development servers
 app.add_middleware(
@@ -169,7 +172,7 @@ async def protect_requests(request: Request, call_next):
     response = await call_next(request)
     response.headers["X-Content-Type-Options"] = "nosniff"
     response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
-    if request.url.path.startswith("/api/auth") or request.url.path.startswith("/api/admin"):
+    if request.url.path.startswith(("/api/auth", "/api/admin", "/api/user")):
         response.headers["Cache-Control"] = "no-store"
     if PRODUCTION:
         response.headers["Strict-Transport-Security"] = "max-age=31536000"
@@ -177,6 +180,16 @@ async def protect_requests(request: Request, call_next):
 
 
 # Mount only public assets. Never mount the repository root or data directory.
+@app.get("/login", include_in_schema=False)
+def user_login_page():
+    return FileResponse(FRONTEND_DIR / "html" / "login.html")
+
+
+@app.get("/admin/login", include_in_schema=False)
+def admin_login_page():
+    return FileResponse(FRONTEND_DIR / "html" / "admin_login.html")
+
+
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
 for prefix in ("", "/frontend"):
@@ -185,8 +198,14 @@ for prefix in ("", "/frontend"):
 
 @app.get("/{page}.html", include_in_schema=False)
 @app.get("/frontend/html/{page}.html", include_in_schema=False)
-def frontend_page(page: str):
+def frontend_page(page: str, request: Request):
+    if page == "cart":
+        user = get_session_user(request.cookies.get(COOKIE_NAME))
+        if not user:
+            return RedirectResponse("/login", status_code=307, headers={"Cache-Control": "no-store"})
+    if page == "login":
+        return RedirectResponse("/login", status_code=307)
     # Explicit allowlist prevents exposing other repository files.
-    if page not in {"index", "products", "product_detail", "skin_quiz", "ai_consultant", "cart", "login", "register", "admin_index"}:
+    if page not in {"index", "products", "product_detail", "skin_quiz", "ai_consultant", "cart", "login", "register", "admin_index", "admin_users", "profile"}:
         raise HTTPException(status_code=404)
-    return FileResponse(FRONTEND_DIR / "html" / f"{page}.html")
+    return FileResponse(FRONTEND_DIR / "html" / f"{page}.html", headers={"Cache-Control": "no-store"} if page == "cart" else None)
