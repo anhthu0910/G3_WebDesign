@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     button.disabled = true;
     try {
       await authRequest("/api/auth/register", { method: "POST", body: JSON.stringify({ username: document.getElementById("username").value.trim(), email: document.getElementById("email").value.trim(), password }) });
-      window.location.href = "login.html";
+      window.location.href = "/login";
     } catch (error) { message.textContent = error.message; button.disabled = false; }
   });
 });
