@@ -68,7 +68,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const main = document.querySelector("main");
   if (!main) return;
   if (!user || user.role !== "admin") {
-    main.innerHTML = '<section class="admin-home-overview"><h1>Admin access required</h1><p>Please sign in as an admin.</p><a href="login.html">Go to Login</a></section>';
+    main.innerHTML = '<section class="admin-home-overview"><h1>Admin access required</h1><p>Please sign in as an admin.</p><a href="/admin/login">Go to Admin Login</a></section>';
     return;
   }
   main.replaceChildren();

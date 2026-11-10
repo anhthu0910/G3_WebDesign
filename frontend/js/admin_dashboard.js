@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (stats && !document.getElementById("analytics")) { const anchor = document.createElement("span"); anchor.id = "analytics"; stats.before(anchor); }
   document.getElementById("userList")?.closest(".admin-panel")?.setAttribute("id", "users");
   document.getElementById("productList")?.closest(".admin-panel")?.setAttribute("id", "product-management");
-  try { const result = await authRequest("/api/admin/me"); if (result.user?.role !== "admin") throw new Error("Admin access required"); status.textContent = `Welcome, ${result.user.username}!`; content.hidden = false; await loadDashboard(); } catch { status.textContent = "Please sign in as an admin."; const link = document.createElement("a"); link.href = "login.html"; link.textContent = "Go to Login"; status.after(link); }
+  try { const result = await authRequest("/api/admin/me"); if (result.user?.role !== "admin") throw new Error("Admin access required"); status.textContent = `Welcome, ${result.user.username}!`; content.hidden = false; await loadDashboard(); } catch { status.textContent = "Please sign in as an admin."; const link = document.createElement("a"); link.href = "/admin/login"; link.textContent = "Go to Admin Login"; status.after(link); }
   document.getElementById("productSearch").addEventListener("input", event => renderProducts(adminProducts.filter(p => p.name.toLowerCase().includes(event.target.value.toLowerCase()))));
   document.getElementById("newProductButton").onclick = () => { document.getElementById("productForm").reset(); document.getElementById("productId").value = ""; };
   document.getElementById("cancelProductButton").onclick = () => document.getElementById("productForm").reset();
