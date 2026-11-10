@@ -1,18 +1,16 @@
 import json
-import sqlite3
 import os
+import secrets
 from datetime import date, timedelta
-from pathlib import Path
 
 from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile
 from pydantic import BaseModel, Field, field_validator
 
 from backend.auth_routes import current_user
+from backend.config import UPLOAD_DIR
 from backend.database import get_connection
 
 router = APIRouter(prefix="/api/admin", tags=["admin"])
-from backend.config import UPLOAD_DIR
-import secrets
 ALLOWED_IMAGE_TYPES = {"image/jpeg": ".jpg", "image/png": ".png", "image/webp": ".webp"}
 MAX_IMAGE_SIZE = 5 * 1024 * 1024
 
@@ -170,7 +168,8 @@ def update_product(product_id: int, payload: ProductPayload, admin_user: dict = 
         ).fetchone()
         if row is None:
             raise HTTPException(status_code=404, detail="Product not found")
-        product = json.loads(row["product_data"])
+        original_product = json.loads(row["product_data"])
+        product = original_product.copy()
         # Older catalog JSON can omit fields that already exist in SQL columns.
         # Fill only missing fields so partial edits preserve the existing values.
         for field in ("name", "brand", "category", "price", "currency", "image", "affiliate_url", "product_url"):
@@ -198,7 +197,10 @@ def update_product(product_id: int, payload: ProductPayload, admin_user: dict = 
                 product_id,
             ),
         )
-    changed = sorted(key for key in payload.model_fields_set if key != "id" and product.get(key) != json.loads(row["product_data"]).get(key))
+    changed = sorted(
+        key for key in payload.model_fields_set
+        if key != "id" and product.get(key) != original_product.get(key)
+    )
     write_audit(admin_user, "update: " + (", ".join(changed) or "no changes"), "product", product_id)
     return product
 
@@ -372,7 +374,7 @@ def update_content(key: str, payload: ContentPayload, _: dict = Depends(require_
 
 @router.get("/ai/status")
 def ai_status(_: dict = Depends(require_admin)):
-    return {"configured": bool(__import__('os').getenv("GEMINI_API_KEY")), "message": "API key status is never exposed."}
+    return {"configured": bool(os.getenv("GEMINI_API_KEY")), "message": "API key status is never exposed."}
 
 
 @router.post("/ai/test")

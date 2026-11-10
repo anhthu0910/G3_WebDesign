@@ -62,15 +62,10 @@ document.addEventListener("DOMContentLoaded", () => {
     scrollToBottom();
 
     try {
-      console.log("Sending question:", text);
-      console.log("History:", conversationHistory);
-
       const data = await sendChatMessage(
         text,
         conversationHistory.slice(-6)
       );
-
-      console.log("API RESPONSE:", data);
 
       if (typeof data?.reply !== "string" || !data.reply.trim()) {
         throw new Error("Invalid AI response");

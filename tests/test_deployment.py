@@ -1,5 +1,7 @@
 """Run with python -m unittest discover -s tests -v; never use the real DB."""
 import os
+import atexit
+import shutil
 import uuid
 import unittest
 from pathlib import Path
@@ -7,8 +9,20 @@ from unittest.mock import patch, Mock
 from urllib.parse import urljoin, urlparse
 from html.parser import HTMLParser
 
-TEST_DIR = Path(__file__).resolve().parents[1] / "data" / ("test-" + uuid.uuid4().hex)
-TEST_DIR.mkdir(parents=True)
+TEST_ROOT = (Path(__file__).resolve().parents[1] / "data").resolve()
+TEST_NAME = "test-" + uuid.uuid4().hex
+TEST_DIR = TEST_ROOT / TEST_NAME
+TEST_DIR.mkdir()
+
+
+def cleanup_test_storage():
+    # Only remove the disposable directory created by this test process.
+    target = TEST_DIR.resolve()
+    if target.parent == TEST_ROOT and target.name == TEST_NAME:
+        shutil.rmtree(target)
+
+
+atexit.register(cleanup_test_storage)
 os.environ.update(APP_ENV="production", DATABASE_PATH=str(TEST_DIR / "test.db"),
                   UPLOAD_DIR=str(TEST_DIR / "uploads"), GEMINI_API_KEY="")
 
@@ -32,6 +46,7 @@ class Links(HTMLParser):
 class DeploymentTests(unittest.TestCase):
     def setUp(self):
         self.client = TestClient(app, base_url="https://testserver")
+        self.addCleanup(self.client.close)
 
     def test_pages_and_local_assets(self):
         self.assertEqual(self.client.get("/").status_code, 200)
@@ -74,6 +89,7 @@ class DeploymentTests(unittest.TestCase):
         with get_connection() as conn:
             conn.execute("INSERT INTO users(username,email,password_hash,role) VALUES(?,?,?,'admin')", ("deployadmin", "admin@example.invalid", hash_password(password)))
         admin = TestClient(app, base_url="https://testserver")
+        self.addCleanup(admin.close)
         self.assertEqual(admin.post("/api/auth/login", json={"identifier": "deployadmin", "password": password, "role": "admin"}).status_code, 200)
         for path in ("me", "overview", "products", "analytics", "quiz", "content", "ai/status", "users", "audit-logs"):
             self.assertEqual(admin.get("/api/admin/" + path).status_code, 200, path)

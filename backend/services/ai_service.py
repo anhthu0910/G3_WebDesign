@@ -1,6 +1,5 @@
 import os
 import logging
-from pathlib import Path
 
 from backend.config import BASE_DIR
 from google import genai

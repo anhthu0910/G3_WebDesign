@@ -16,6 +16,7 @@ class FeedbackTests(unittest.TestCase):
 
     def test_dashboard_counts_chat_success_failure_and_affiliate_click(self):
         client = deployment.TestClient(deployment.app, base_url="https://testserver")
+        self.addCleanup(client.close)
         before = overview({})["cards"]
         with patch("backend.main.generate_skincare_reply", return_value="Test reply"):
             self.assertEqual(client.post("/api/chat", json={"message": "Hello"}).status_code, 200)
