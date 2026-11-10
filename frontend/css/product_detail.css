@@ -322,3 +322,10 @@
   border-color: #d9a5b5;
 }
 
+.shopee-logo {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  vertical-align: middle;
+  margin-right: 6px;
+}
