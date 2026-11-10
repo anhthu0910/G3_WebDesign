@@ -8,6 +8,10 @@ from backend.services.password_service import hash_password, verify_password, ne
 SESSION_DAYS = 7
 
 
+class AccountLockedError(Exception):
+    pass
+
+
 def utc_now():
     return datetime.now(timezone.utc)
 
@@ -49,8 +53,10 @@ def authenticate_user(identifier, password, role=None):
             query += " AND role = ?"
             params.append(role)
         row = conn.execute(query, params).fetchone()
-        if row is None or row["locked"] or not verify_password(password, row["password_hash"]):
+        if row is None or not verify_password(password, row["password_hash"]):
             return None
+        if row["locked"]:
+            raise AccountLockedError()
         if needs_rehash(row["password_hash"]):
             conn.execute("UPDATE users SET password_hash = ? WHERE id = ?", (hash_password(password), row["id"]))
         return public_user(row)
