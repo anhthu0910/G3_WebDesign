@@ -367,10 +367,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         buyButton.dataset.affiliateProduct = product.id;
         buyButton.hidden = false;
 
-        buyButton.textContent =
-          product.affiliate_platform
-            ? `🛍️ Buy on ${formatLabel(product.affiliate_platform)}`
-            : "🛍️ Buy This Product";
+        const buyLabel = buyButton.querySelector("[data-buy-label]");
+
+        if (buyLabel) {
+          buyLabel.textContent = product.affiliate_platform
+            ? `Buy on ${formatLabel(product.affiliate_platform)}`
+            : "Buy This Product";
+        }
 
       } else {
         // Hide button until a real affiliate link exists.
