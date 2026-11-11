@@ -7,7 +7,8 @@ async function openCart(user, status = user ? 200 : 401) {
   const context = vm.createContext({
     fetch: async () => ({ ok: status === 200, status, json: async () => ({ user }) }),
     localStorage: { getItem: key => storage.get(key), setItem: (key, value) => storage.set(key, value) },
-    window: { dispatchEvent() {} }, CustomEvent: class {}, console, alert() {}
+    window: { dispatchEvent() {}, addEventListener() {} }, CustomEvent: class {},
+    document: { addEventListener() {}, querySelectorAll: () => [] }, console, alert() {}
   });
   vm.runInContext(source, context);
   await vm.runInContext('cartReady', context);
