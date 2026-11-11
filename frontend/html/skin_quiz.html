@@ -32,32 +32,66 @@
 
   <main class="quiz-page">
     <section class="quiz-container">
+      <div id="quizWelcome" class="quiz-welcome">
 
-      <p class="quiz-eyebrow">PERSONALIZED SKINCARE</p>
-      <h1>Discover Your Skin Type</h1>
+        <p class="quiz-eyebrow">PERSONALIZED SKINCARE</p>
 
-      <p class="quiz-intro">
-        Answer five simple questions to explore your skin
-        characteristics and find products on GlowGuide.
-      </p>
+        <h1>Discover Your Skin Type</h1>
 
-      <div class="quiz-progress-info">
-        <span id="questionCounter">Question 1 of 5</span>
-        <span id="progressText">20%</span>
+        <!-- Feature information comes first -->
+        <div class="quiz-welcome-details">
+          <div class="quiz-detail">
+            <span class="quiz-detail-icon">✦</span>
+            <span>Personalized skin insights</span>
+          </div>
+
+          <div class="quiz-detail">
+            <span class="quiz-detail-icon">◷</span>
+            <span>Only a few minutes</span>
+          </div>
+
+          <div class="quiz-detail">
+            <span class="quiz-detail-icon">♡</span>
+            <span>Skincare recommendations</span>
+          </div>
+        </div>
+
+        <!-- Description comes after the features -->
+        <p class="quiz-intro">
+          Answer a few simple questions to explore your skin
+          characteristics and discover skincare products
+          that may suit your needs.
+        </p>
+
+        <button id="startQuizButton" type="button"
+                class="quiz-start-button">
+          Take the Quiz →
+        </button>
+
       </div>
 
-      <div class="quiz-progress">
-        <div id="progressBar"></div>
+      <!-- QUIZ CONTENT -->
+      <div id="quizContent" hidden>
+
+        <div class="quiz-progress-info">
+          <span id="questionCounter">Question 1 of 5</span>
+          <span id="progressText">20%</span>
+        </div>
+
+        <div class="quiz-progress">
+          <div id="progressBar"></div>
+        </div>
+
+        <div id="quizQuestion" class="quiz-question"></div>
+
+        <div class="quiz-navigation">
+          <button id="backButton" type="button">← Back</button>
+          <button id="nextButton" type="button">Next →</button>
+        </div>
+
+        <section id="quizResult" class="quiz-result" hidden></section>
+
       </div>
-
-      <div id="quizQuestion" class="quiz-question"></div>
-
-      <div class="quiz-navigation">
-        <button id="backButton" type="button">← Back</button>
-        <button id="nextButton" type="button">Next →</button>
-      </div>
-
-      <section id="quizResult" class="quiz-result" hidden></section>
 
       <p class="quiz-disclaimer">
         This quiz is for general skincare guidance only
@@ -65,6 +99,7 @@
       </p>
 
     </section>
+
   </main>
 
   <footer class="footer">

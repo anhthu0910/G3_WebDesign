@@ -4,7 +4,12 @@
   background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), 
               url('../images/2476919.jpg') center/cover fixed no-repeat;
 }
-.cart-container { max-width: 1120px; margin: 0 auto; }
+
+.cart-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
 .cart-container > h1 {
   margin-bottom: 30px;
   color: #ffffff;
@@ -13,10 +18,8 @@
 }
 
 .cart-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1.8fr) minmax(260px, .8fr);
-  gap: 26px;
-  align-items: start;
+  display: block;
+  width: 100%;
 }
 
 .cart-products, .cart-summary {
@@ -38,14 +41,6 @@
 .cart-section-heading h2, .cart-summary h2 { color: #604752; }
 .cart-section-heading span { color: #a47786; font-size: 14px; }
 
-.cart-item {
-  display: grid;
-  grid-template-columns: 125px 1fr;
-  gap: 20px;
-  padding: 22px 0;
-  border-bottom: 1px solid #f1e4e6;
-}
-
 .cart-item-image {
   width: 125px;
   height: 135px;
@@ -60,7 +55,6 @@
 .cart-controls { display: flex; align-items: center; gap: 9px; margin: 18px 0 14px; }
 .cart-quantity-group, .cart-item-subtotal { display: none !important; }
 #summaryCount, #estimatedTotal { display: none; }
-.cart-summary p:has(#summaryCount), .cart-summary p:has(#estimatedTotal) { display: none; }
 .cart-controls button {
   min-width: 34px;
   height: 34px;
@@ -75,7 +69,7 @@
 .cart-controls button:last-child { margin-left: 8px; color: #a45f79; }
 
 .cart-buy {
-  display: inline-block;
+  display: inline-flex;
   padding: 10px 17px;
   border-radius: 10px;
   background: #b97c91;
@@ -86,10 +80,6 @@
 }
 .cart-buy:hover { background: #9f6077; }
 
-.cart-summary { position: sticky; top: 20px; }
-.cart-summary h2 { margin-bottom: 24px; }
-.cart-summary p { display: flex; justify-content: space-between; margin: 18px 0; color: #745c67; }
-#estimatedTotal { color: #b26380; font-size: 21px; }
 .cart-clear {
   width: 100%;
   margin-top: 18px;
@@ -378,15 +368,9 @@
    CART LAYOUT - FULL WIDTH PRODUCTS
 ========================================== */
 
-.cart-container {
-  max-width: 1400px;
-  margin: 0 auto;
-}
 
-.cart-layout {
-  display: block;
-  width: 100%;
-}
+
+
 
 .cart-products {
   width: 100%;

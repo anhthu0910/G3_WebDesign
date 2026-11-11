@@ -554,18 +554,6 @@ h3 {
   }
 }
 
-.footer-links a {
-  color: #f8dfe4; 
-  text-decoration: none; 
-  display: inline-block; 
-  margin: 0 12px;
-  transition: color 0.2s ease;
-}
-
-.footer-links a:hover {
-  color: #df94a7; 
-}
-
 @media (max-width: 768px) {
   .navbar {
     flex-direction: column;

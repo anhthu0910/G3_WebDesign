@@ -43,3 +43,11 @@
 
 .auth-card .role-button:not(.active) { background: #f5edf0; color: #806c76; opacity: .55; }
 .auth-card .role-button:focus-visible { outline: 2px solid #644351; outline-offset: 3px; }
+
+/* Center Continue as Guest link */
+.guest-link {
+  display: block;
+  width: fit-content;
+  margin: 0 auto;
+  text-align: center;
+}

@@ -199,6 +199,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   let currentQuestion = 0;
   const selectedAnswers = Array(questions.length).fill(null);
 
+  const welcomeScreen = document.getElementById("quizWelcome");
+  const quizContent = document.getElementById("quizContent");
+  const startQuizButton = document.getElementById("startQuizButton");
+
+  // Track whether the user is currently taking the quiz.
+  let quizInProgress = false;
   const questionBox = document.getElementById("quizQuestion");
   const resultBox = document.getElementById("quizResult");
   const backButton = document.getElementById("backButton");
@@ -338,6 +344,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   // ==========================================
 
   function showResult() {
+    quizInProgress = false;
+
     const result = calculateResult();
 
     questionBox.hidden = true;
@@ -428,6 +436,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   function restartQuiz() {
     currentQuestion = 0;
     selectedAnswers.fill(null);
+    quizInProgress = true;
 
     resultBox.hidden = true;
     questionBox.hidden = false;
@@ -460,5 +469,63 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 
-  renderQuestion();
+  // ==========================================
+  // START QUIZ
+  // ==========================================
+
+  startQuizButton.addEventListener("click", () => {
+    welcomeScreen.hidden = true;
+    quizContent.hidden = false;
+
+    quizInProgress = true;
+    currentQuestion = 0;
+    selectedAnswers.fill(null);
+
+    renderQuestion();
+  });
+
+
+  // ==========================================
+  // WARN BEFORE LEAVING QUIZ
+  // ==========================================
+
+  // Browser warning when refreshing or closing the tab.
+  window.addEventListener("beforeunload", event => {
+    if (!quizInProgress) return;
+
+    event.preventDefault();
+    event.returnValue = "";
+  });
+
+  // Custom warning when navigating through website links.
+  document.addEventListener("click", event => {
+    if (!quizInProgress) return;
+
+    const link = event.target.closest("a[href]");
+
+    if (!link) return;
+
+    // Do not warn when opening a new tab.
+    if (link.target === "_blank") return;
+
+    // Ignore modified clicks (Ctrl/Cmd/Shift + click).
+    if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) {
+      return;
+    }
+
+    const confirmed = window.confirm(
+      "You are currently taking the Skin Quiz.\n\n" +
+      "If you leave this page, all your answers will be lost.\n\n" +
+      "Are you sure you want to leave?"
+    );
+
+    if (!confirmed) {
+      event.preventDefault();
+      event.stopPropagation();
+    } else {
+      // Prevent a second browser warning.
+      quizInProgress = false;
+    }
+  }, true);
+
 });

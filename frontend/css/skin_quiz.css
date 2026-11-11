@@ -242,3 +242,158 @@ body,
 .admin-quiz-form button { padding: 12px 18px; border: 1px solid #d4a5b2; border-radius: 8px; background: #fff1f4; color: #644351; cursor: pointer; }
 .admin-quiz-form button:disabled { opacity: .5; cursor: default; }
 .admin-quiz-form > button[type=submit] { position: sticky; bottom: 16px; background: #996477; color: white; }
+
+
+/* ==========================================
+   QUIZ WELCOME SCREEN
+========================================== */
+
+.quiz-welcome {
+  padding: 15px 0 10px;
+}
+
+.quiz-welcome .quiz-intro {
+  max-width: 620px;
+  margin-bottom: 30px;
+  font-size: 16px;
+  line-height: 1.8;
+}
+
+.quiz-welcome-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 28px 0 35px;
+}
+
+.quiz-detail {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  padding: 11px 15px;
+  border: 1px solid #f0dfe5;
+  border-radius: 10px;
+
+  background: #fff9fa;
+  color: #765d68;
+  font-size: 13px;
+}
+
+.quiz-detail-icon {
+  color: #bd7c91;
+  font-size: 17px;
+}
+
+.quiz-start-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  padding: 15px 28px;
+  border: 1px solid #ba7c90;
+  border-radius: 11px;
+
+  background: #ba7c90;
+  color: white;
+
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.quiz-start-button:hover {
+  background: #a9677e;
+  border-color: #a9677e;
+  transform: translateY(-2px);
+}
+
+.quiz-start-button:focus-visible {
+  outline: 3px solid #a44f6b;
+  outline-offset: 3px;
+}
+
+@media (max-width: 600px) {
+  .quiz-welcome-details {
+    flex-direction: column;
+  }
+
+  .quiz-detail {
+    width: 100%;
+  }
+
+  .quiz-start-button {
+    width: 100%;
+  }
+}
+
+
+/* ==========================================
+   CENTERED QUIZ WELCOME SCREEN
+========================================== */
+
+.quiz-welcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* Main heading */
+.quiz-welcome .quiz-eyebrow {
+  text-align: center;
+}
+
+.quiz-welcome h1 {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+/* Feature information */
+.quiz-welcome-details {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+
+  width: 100%;
+  margin: 10px 0 25px;
+}
+
+.quiz-detail {
+  justify-content: center;
+}
+
+/* Description */
+.quiz-welcome .quiz-intro {
+  max-width: 650px;
+  margin: 0 auto 30px;
+  text-align: center;
+}
+
+/* Start button */
+.quiz-welcome .quiz-start-button {
+  align-self: center;
+}
+
+/* Disclaimer */
+.quiz-container .quiz-disclaimer {
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .quiz-welcome-details {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .quiz-detail {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
