@@ -1,17 +1,15 @@
 #accountArea { display: inline-flex; align-items: center; vertical-align: middle; flex-wrap: wrap; gap: 12px; margin-left: 12px; min-height: 42px; }
 #accountArea a { color: #a7607a; text-decoration: none; }
-.admin-nav-links { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 14px; margin-left: 12px; }
-.admin-nav-links a { color: #a7607a !important; font-size: .92em; }
 .account-logout { border: 1px solid #d7a8b9; border-radius: 9px; padding: 9px 14px; background: white; color: #a7607a; cursor: pointer; font: inherit; line-height: 1.2; }
 .auth-page { min-height: 85vh; display: flex; justify-content: center; align-items: center; padding: 50px 20px; background: linear-gradient(135deg, #fff9f8, #f9e7ee); }
 .auth-card { width: 100%; max-width: 460px; padding: 42px; background: white; border: 1px solid #f1dfe6; border-radius: 22px; box-shadow: 0 12px 40px rgba(100,60,75,.08); }
 .auth-card form { display: flex; flex-direction: column; gap: 10px; }
+.auth-card #loginForm { margin-top: 24px; }
 .auth-card input { padding: 13px; border: 1px solid #e8d1d9; border-radius: 10px; font: inherit; }
 .auth-card button { padding: 14px; border: 0; border-radius: 11px; background: #b97c91; color: white; font-weight: 700; cursor: pointer; }
 .auth-message { min-height: 20px; margin-top: 16px; color: #a45570; text-align: center; }
-.login-role-choice { display: flex; gap: 10px; margin: 18px 0; }
-.role-button { flex: 1; border: 1px solid #d7a8b9; border-radius: 9px; padding: 10px; background: white; color: #a7607a; cursor: pointer; }
-.role-button.active { background: #b97c91; color: white; }
+.auth-card select { padding: 13px; border: 1px solid #e8d1d9; border-radius: 10px; font: inherit; width: 100%; }
+#profileForm[hidden] { display: none; }
 .show-password { display: flex !important; align-items: center; gap: 7px; font-weight: 400 !important; }
 .admin-page { padding: 45px 6%; background: #fff9f8; min-height: 85vh; }
 .admin-shell { max-width: 1100px; margin: auto; }
@@ -40,9 +38,6 @@
 @media (max-width: 800px) { .overview-cards, .overview-columns { grid-template-columns: 1fr 1fr; } .overview-heading { grid-template-columns: 1fr; } }
 @media (max-width: 500px) { .overview-cards, .overview-columns { grid-template-columns: 1fr; } }
 .auth-footer-text, .guest-link { text-align: center; margin-top: 20px; }
-
-.auth-card .role-button:not(.active) { background: #f5edf0; color: #806c76; opacity: .55; }
-.auth-card .role-button:focus-visible { outline: 2px solid #644351; outline-offset: 3px; }
 
 /* Center Continue as Guest link */
 .guest-link {
