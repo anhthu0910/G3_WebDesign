@@ -1,0 +1,26 @@
+<!doctype html><html lang="en"><head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>My Profile | GlowGuide</title>
+  <link rel="stylesheet" href="../css/style.css"><link rel="stylesheet" href="../css/auth.css">
+  <script src="../js/auth.js" defer></script><script src="../js/main.js" defer></script>
+  <script src="../js/cart.js" defer></script><script src="../js/profile.js?v=remove-saved-quiz-section" defer></script>
+</head><body>
+  <header class="navbar"><a href="index.html" class="logo">GlowGuide</a><nav>
+    <a href="index.html">Home</a><a href="products.html">Products</a><a href="skin_quiz.html">Skin Quiz</a>
+    <a href="ai_consultant.html">AI Consultant</a><a href="cart.html">Cart</a><span id="accountArea"></span>
+  </nav></header>
+  <main class="auth-page"><section class="auth-card">
+    <h1>My Profile</h1><p id="profileStatus" class="auth-message" role="status">Loading profile...</p>
+    <button id="reloadProfile" type="button" hidden>Retry loading</button>
+    <form id="profileForm" hidden>
+      <label for="profileUsername">Username</label><input id="profileUsername" required minlength="3" maxlength="50" autocomplete="username">
+      <label for="profileEmail">Email</label><input id="profileEmail" type="email" required maxlength="254" autocomplete="email">
+      <label for="profileSkinType">Skin preference</label>
+      <select id="profileSkinType"><option value="">Not specified</option><option value="dry">Dry</option><option value="oily">Oily</option>
+        <option value="normal">Normal</option><option value="combination">Combination</option><option value="sensitive">Sensitive</option></select>
+      <label for="profileConcern">Main concern</label><input id="profileConcern" maxlength="100">
+      <button id="saveProfile">Save Profile</button>
+    </form>
+  </section></main>
+  <footer class="footer"><p>© 2026 GlowGuide. All rights reserved.</p></footer>
+</body></html>
