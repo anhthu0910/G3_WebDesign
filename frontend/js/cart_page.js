@@ -268,13 +268,23 @@ document.addEventListener("DOMContentLoaded", async () => {
     const buyLink = getBuyLink(product);
 
     if (buyLink) {
-      const buyButton = createElement(
-        "a",
-        "cart-buy",
-        "Buy Now"
-      );
+      const buyButton = createElement("a", "cart-buy");
 
       buyButton.href = buyLink.href;
+
+      // Shopee logo
+      const shopeeLogo = document.createElement("img");
+      shopeeLogo.src = "../images/shopee-logo.png";
+      shopeeLogo.alt = "";
+      shopeeLogo.className = "cart-buy-logo";
+      shopeeLogo.setAttribute("aria-hidden", "true");
+
+      // Button text
+      const buyText = document.createElement("span");
+      buyText.textContent = "Buy Now";
+
+      buyButton.append(shopeeLogo, buyText);
+
       if (buyLink.affiliate) buyButton.dataset.affiliateProduct = product.id;
       buyButton.target = "_blank";
 
@@ -342,7 +352,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const itemCount = getCartCount();
 
     if (count) {
-      count.textContent = `${itemCount} items`;
+      count.textContent = `${itemCount} ${itemCount === 1 ? "item" : "items"}`;
     }
 
     if (summary) {

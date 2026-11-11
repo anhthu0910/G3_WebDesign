@@ -37,15 +37,25 @@
       <h1>My Cart</h1>
       <div class="cart-layout">
         <section class="cart-products">
-          <div class="cart-section-heading"><h2>Products</h2><span id="cartCount">0 items</span></div>
+
+          <div class="cart-section-heading">
+            <h2>Products</h2>
+
+            <div class="cart-heading-actions">
+              <span id="cartCount">0 items</span>
+
+              <button
+                id="clearCartButton"
+                type="button"
+                class="cart-clear"
+              >
+                Clear Cart
+              </button>
+            </div>
+          </div>
+
           <div id="cartItems">Loading your cart...</div>
         </section>
-        <aside class="cart-summary">
-          <h2>Cart Summary</h2>
-          <p>Total Items: <strong id="summaryCount">0</strong></p>
-          <p>Estimated Total: <strong id="estimatedTotal">0 ₫</strong></p>
-          <button id="clearCartButton" type="button" class="cart-clear">Clear Cart</button>
-        </aside>
       </div>
     </div>
   </main>

@@ -372,3 +372,135 @@
     width: 100%;
   }
 }
+
+
+/* ==========================================
+   CART LAYOUT - FULL WIDTH PRODUCTS
+========================================== */
+
+.cart-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.cart-layout {
+  display: block;
+  width: 100%;
+}
+
+.cart-products {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Products heading */
+.cart-section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid #f1e4e6;
+}
+
+.cart-heading-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.cart-heading-actions #cartCount {
+  white-space: nowrap;
+  color: #a47786;
+  font-size: 14px;
+}
+
+/* Clear Cart button */
+.cart-heading-actions .cart-clear {
+  width: auto;
+  margin: 0;
+  padding: 9px 20px;
+
+  border: 1px solid #e2b5c4;
+  border-radius: 9px;
+
+  background: #fff5f7;
+  color: #a45f79;
+
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+.cart-heading-actions .cart-clear:hover {
+  background: #b97c91;
+  border-color: #b97c91;
+  color: white;
+}
+
+.cart-heading-actions .cart-clear:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .cart-section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .cart-heading-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+
+/* ==========================================
+   SWAP CLEAR CART & VIEW DETAILS BUTTONS
+========================================== */
+
+/* Clear Cart: outlined style */
+.cart-heading-actions .cart-clear {
+  background: #ffffff;
+  border: 1px solid #dcaab9;
+  color: #a76a7e;
+}
+
+.cart-heading-actions .cart-clear:hover {
+  background: #fff3f6;
+  border-color: #dcaab9;
+  color: #a76a7e;
+}
+
+/* View Details: light pink filled style */
+.cart-details {
+  border: 1px solid #e2b5c4;
+  background: #fff5f7;
+  color: #a45f79;
+}
+
+.cart-details:hover {
+  background: #fce8ee;
+  border-color: #e2b5c4;
+  color: #a45f79;
+}
+
+
+/* Shopee logo inside Buy Now button */
+.cart-buy {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+}
+
+.cart-buy-logo {
+  width: 19px;
+  height: 19px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
