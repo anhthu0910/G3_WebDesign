@@ -22,6 +22,9 @@ async function authRequest(path, options = {}) {
     throw new Error(guidance);
   }
   if (!response.ok) {
+    if (path === "/api/auth/login" && response.status === 403 && data.detail === "account_locked") {
+      throw new Error("Your account has been locked. Please contact an administrator.");
+    }
     const messages = {
       400: "Please check your information.",
       401: path === "/api/auth/login" ? "Incorrect username or password." : "Please sign in to continue.",
@@ -45,36 +48,53 @@ async function getCurrentUser() {
 
 async function logoutUser() {
   await authRequest("/api/auth/logout", { method: "POST" });
-  window.location.href = "index.html";
+  window.location.href = "/frontend/html/index.html";
 }
 
 async function updateAccountNavigation() {
   const area = document.getElementById("accountArea");
-  if (!area) return;
   const user = await getCurrentUser();
+  if (!user) {
+    document.querySelectorAll('a[href$="cart.html"]').forEach(link => link.remove());
+  }
+  if (!area) return;
+  const pageBase = ["/login", "/admin/login"].includes(window.location.pathname) ? "/frontend/html/" : "";
   area.replaceChildren();
   if (!user) {
     const link = document.createElement("a");
-    link.href = "login.html";
-    link.textContent = "Login / Sign Up";
+    const adminPage = /\/admin_(index|users)\.html$/.test(window.location.pathname);
+    link.href = adminPage ? "/admin/login" : "/login";
+    link.textContent = adminPage ? "Admin Login" : "Login / Sign Up";
     area.appendChild(link);
     return;
   }
   const welcome = document.createElement("span");
   welcome.textContent = `Hi, ${user.username}`;
   area.appendChild(welcome);
+  if (user.role === "user") {
+    const link = document.createElement("a");
+    link.href = `${pageBase}profile.html`;
+    link.textContent = "My Profile";
+    area.appendChild(link);
+  }
   if (user.role === "admin") {
+    const nav = document.querySelector(".navbar nav");
+    if (nav && !nav.querySelector('a[href$="admin_users.html"]')) {
+      const users = document.createElement("a");
+      users.href = `${pageBase}admin_users.html`;users.textContent = "Users";
+      nav.insertBefore(users, area);
+    }
     document.querySelectorAll("nav a").forEach(link => {
       if (link.textContent.trim() === "Home") {
-        link.href = "admin_index.html";
+        link.href = `${pageBase}admin_index.html`;
         link.textContent = "Admin Home";
       }
     });
-    document.querySelectorAll("a.logo[href='index.html']").forEach(link => {
-      link.href = "admin_index.html";
+    document.querySelectorAll("a.logo[href$='index.html']").forEach(link => {
+      link.href = `${pageBase}admin_index.html`;
     });
-    document.querySelectorAll('a[href="ai_consultant.html"]').forEach(link => link.remove());
-    document.querySelectorAll('a[href="cart.html"]').forEach(link => link.remove());
+    document.querySelectorAll('a[href$="ai_consultant.html"]').forEach(link => link.remove());
+    document.querySelectorAll('a[href$="cart.html"]').forEach(link => link.remove());
     if (window.location.pathname.endsWith("/ai_consultant.html")) {
       window.location.replace("products.html");
       return;
@@ -89,6 +109,16 @@ async function updateAccountNavigation() {
 }
 
 document.addEventListener("DOMContentLoaded", updateAccountNavigation);
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".guest-link").forEach(link => link.addEventListener("click", async event => {
+    event.preventDefault();
+    try {
+      await authRequest("/api/auth/logout", { method: "POST" });
+      window.location.href = link.href;
+    } catch (error) { document.getElementById("authMessage").textContent = error.message; }
+  }));
+});
 
 function trackAffiliateClick(event) {
   const link = event.target.closest("a[data-affiliate-product]");
