@@ -474,12 +474,84 @@ h3 {
   line-height: 1.7;
 }
 
-footer {
+
+/* ==========================================
+   SHARED FOOTER
+========================================== */
+
+.footer {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr 1.5fr;
+  gap: 50px;
+
+  padding: 55px 8% 20px;
   background: #473739;
   color: white;
+  text-align: left;
+  line-height: 1.8;
+}
+
+.footer h2 {
+  color: #f2b9c5;
+  font-size: 28px;
+  margin-bottom: 12px;
+}
+
+.footer h3 {
+  color: #f2b9c5;
+  font-size: 17px;
+  margin-bottom: 14px;
+}
+
+.footer-about p,
+.footer-disclaimer p {
+  color: #e8dadd;
+  font-size: 14px;
+}
+
+.footer-links {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.footer-links a {
+  color: #f8dfe4;
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.2s ease;
+}
+
+.footer-links a:hover {
+  color: #df94a7;
+}
+
+.footer-disclaimer p + p {
+  margin-top: 12px;
+}
+
+.footer-bottom {
+  grid-column: 1 / -1;
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+  margin-top: 15px;
+  padding-top: 18px;
   text-align: center;
-  padding: 28px;
-  line-height: 1.9;
+  color: #d9c5ca;
+  font-size: 13px;
+}
+
+/* Responsive Footer */
+@media (max-width: 768px) {
+  .footer {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    padding: 40px 6% 20px;
+  }
+
+  .footer-bottom {
+    grid-column: 1;
+  }
 }
 
 .footer-links a {
