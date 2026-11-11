@@ -664,3 +664,28 @@ footer {
   }
 }
 
+/* Cart quantity badge in navbar */
+.cart-badge {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+
+  min-width: 19px;
+  height: 19px;
+  padding: 0 5px;
+  margin-left: 6px;
+
+  border-radius: 50%;
+  background: #d98e9e;
+  color: white;
+
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+.cart-badge[hidden] {
+  display: none;
+}
+

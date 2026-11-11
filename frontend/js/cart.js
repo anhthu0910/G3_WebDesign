@@ -102,3 +102,41 @@ function getCartCount() {
   );
 }
 
+// Hiển thị số lượng sản phẩm trên Cart ở navbar
+function updateCartBadge() {
+  const cartLinks = document.querySelectorAll(
+    'nav a[href$="cart.html"]'
+  );
+
+  cartLinks.forEach(link => {
+    let badge = link.querySelector(".cart-badge");
+
+    if (!badge) {
+      badge = document.createElement("span");
+      badge.className = "cart-badge";
+      badge.setAttribute("aria-hidden", "true");
+      link.appendChild(badge);
+    }
+
+    const count = getCartCount();
+
+    badge.textContent = count;
+    badge.hidden = count === 0;
+
+    link.setAttribute(
+      "aria-label",
+      count > 0 ? `Cart, ${count} items` : "Cart"
+    );
+  });
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
+  try {
+    await cartReady;
+    updateCartBadge();
+  } catch (error) {
+    console.error("Unable to update cart badge:", error);
+  }
+});
+
+window.addEventListener("glowguide:cartchanged", updateCartBadge);
