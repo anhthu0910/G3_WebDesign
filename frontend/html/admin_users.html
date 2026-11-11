@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>User Management | GlowGuide Admin</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/auth.css">
+  <link rel="stylesheet" href="../css/admin_home.css">
+  <link rel="stylesheet" href="../css/admin_users.css">
+  <script src="../js/auth.js" defer></script>
+  <script src="../js/main.js" defer></script>
+  <script src="../js/admin_users.js" defer></script>
+</head>
+<body>
+  <header class="navbar">
+    <a href="admin_index.html" class="logo">GlowGuide Admin</a>
+    <nav>
+      <a href="admin_index.html">Home</a><a href="products.html">Products</a>
+      <a href="skin_quiz.html">Skin Quiz</a><a href="admin_users.html" aria-current="page">Users</a>
+      <span id="accountArea"><a href="/admin/login">Admin Login</a></span>
+    </nav>
+  </header>
+  <main class="admin-home-overview">
+    <div class="home-overview-heading"><p>GLOWGUIDE ADMIN</p><h1>User Management</h1>
+      <span>Search registered accounts and manage account access.</span>
+    </div>
+    <section class="home-overview-panel users-panel">
+      <div class="users-heading"><h2>Registered Users</h2><button id="refreshUsers" type="button">Refresh</button></div>
+      <p id="usersStatus" role="status" aria-live="polite">Loading users...</p>
+      <a id="adminLoginLink" href="/admin/login" hidden>Go to Admin Login</a>
+      <div id="userManagement" hidden>
+        <div class="users-summary" aria-label="Account totals">
+          <p>Total users <strong id="totalUsers">0</strong></p>
+          <p>Active <strong id="activeUsers">0</strong></p>
+          <p>Locked <strong id="lockedUsers">0</strong></p>
+        </div>
+        <div class="users-toolbar">
+          <label for="userSearch">Search users<input id="userSearch" type="search" placeholder="Username, email or ID" autocomplete="off"></label>
+          <label for="userStatusFilter">Account status<select id="userStatusFilter">
+            <option value="all">All accounts</option><option value="active">Active</option><option value="locked">Locked</option>
+          </select></label>
+        </div>
+        <p id="userResultCount" role="status"></p>
+        <div class="users-table-scroll" role="region" aria-label="Registered users table" tabindex="0">
+          <table class="users-table"><caption>Registered user accounts</caption>
+            <thead><tr><th scope="col">ID</th><th scope="col">Username</th><th scope="col">Email</th>
+              <th scope="col">Registered</th><th scope="col">Status</th><th scope="col">Action</th></tr></thead>
+            <tbody id="adminUserRows"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer class="footer">
+    <div class="footer-about">
+        <h2>GlowGuide</h2>
+        <p>Smart Skincare Search & AI Consultation Platform.</p>
+    </div>
+
+    <div class="footer-links">
+        <h3>Explore</h3>
+        <a href="products.html">Products</a>
+        <a href="skin_quiz.html">Skin Quiz</a>
+    </div>
+
+    <div class="footer-disclaimer">
+        <h3>Disclaimer</h3>
+        <p>
+            GlowGuide provides skincare information for
+            educational and reference purposes only.
+            AI recommendations do not replace professional
+            medical advice.
+        </p>
+        <p>
+            Some purchasing links may be affiliate links.
+        </p>
+    </div>
+
+    <div class="footer-bottom">
+        <p>&copy; 2026 GlowGuide. All rights reserved.</p>
+    </div>
+  </footer>
+</body>
+</html>
