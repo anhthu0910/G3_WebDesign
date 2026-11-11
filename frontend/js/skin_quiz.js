@@ -1,10 +1,4 @@
-
 "use strict";
-
-// ==========================================
-// GLOWGUIDE SKIN QUIZ
-// ==========================================
-
 document.addEventListener("DOMContentLoaded", async () => {
 
   const questions = [
