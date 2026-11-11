@@ -2,11 +2,30 @@
 "use strict";
 
 let CART_KEY = null;
+let CART_USER = null;
+const MAX_CART_QUANTITY = 999;
+function cartProductId(value) {
+  if (!["number", "string"].includes(typeof value)) return null;
+  const id = Number(value);
+  return Number.isSafeInteger(id) && id > 0 ? String(id) : null;
+}
+function normalizeCart(items) {
+  const result = new Map();
+  if (!Array.isArray(items)) return [];
+  for (const item of items) {
+    const id = cartProductId(item?.id);
+    if (id && Number.isSafeInteger(item?.quantity) && item.quantity > 0) {
+      result.set(id, Math.min(MAX_CART_QUANTITY, (result.get(id) || 0) + item.quantity));
+    }
+  }
+  return [...result].map(([id, quantity]) => ({ id, quantity }));
+}
 const cartReady = (async () => {
   // Never assign a signed-in cart to the guest when the session API fails.
   const response = await fetch("/api/auth/me", { credentials: "include" });
   if (!response.ok && response.status !== 401) throw new Error("Unable to identify cart owner");
   const user = response.ok ? (await response.json()).user : null;
+  CART_USER = user;
   CART_KEY = user ? `glowguide_cart:user:${user.id}` : "glowguide_cart:guest";
   window.dispatchEvent(new CustomEvent("glowguide:cartchanged"));
 })();
@@ -14,13 +33,13 @@ cartReady.catch(error => console.error(error));
 
 // Lấy danh sách sản phẩm trong Cart
 function getCart() {
-  if (!CART_KEY) return [];
+  if (!CART_KEY || CART_USER?.role !== "user") return [];
   try {
     const data = JSON.parse(
       localStorage.getItem(CART_KEY) || "[]"
     );
 
-    return Array.isArray(data) ? data : [];
+    return normalizeCart(data);
   } catch {
     return [];
   }
@@ -28,8 +47,9 @@ function getCart() {
 
 // Lưu Cart
 function saveCart(cart) {
-  if (!CART_KEY) return;
-  localStorage.setItem(CART_KEY, JSON.stringify(cart));
+  if (!CART_KEY || CART_USER?.role !== "user") return;
+  try { localStorage.setItem(CART_KEY, JSON.stringify(normalizeCart(cart))); }
+  catch { alert("Could not save cart. Please check browser storage and retry."); return; }
 
   window.dispatchEvent(
     new CustomEvent("glowguide:cartchanged")
@@ -38,9 +58,14 @@ function saveCart(cart) {
 
 // Thêm sản phẩm vào Cart
 function addToCart(productId) {
+  if (!cartProductId(productId)) return;
   if (!CART_KEY) { cartReady.then(() => addToCart(productId)).catch(() => alert("Cart unavailable. Please refresh the page.")); return; }
+  if (CART_USER?.role !== "user") {
+    alert("Please log in to add items to your cart.");
+    return;
+  }
   const cart = getCart();
-  const id = String(productId);
+  const id = cartProductId(productId);
 
   const existing = cart.find(
     item => String(item.id) === id
@@ -60,6 +85,7 @@ function addToCart(productId) {
 
 // Tăng hoặc giảm số lượng
 function updateCartQuantity(productId, quantity) {
+  if (!Number.isSafeInteger(quantity)) return;
   const cart = getCart();
   const id = String(productId);
 
@@ -140,3 +166,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 window.addEventListener("glowguide:cartchanged", updateCartBadge);
+window.addEventListener("storage", event => {
+  if (event.key === CART_KEY || event.key === null) updateCartBadge();
+});

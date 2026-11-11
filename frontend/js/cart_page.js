@@ -2,10 +2,6 @@
 "use strict";
 
 document.addEventListener("DOMContentLoaded", async () => {
-  const PRODUCT_DATA_URLS = [
-    "/api/products"
-  ];
-
   const list = document.getElementById("cartItems");
   const count = document.getElementById("cartCount");
   const summary = document.getElementById("summaryCount");
@@ -67,31 +63,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     return products.find(
       product => String(product.id) === String(id)
     );
-  }
-
-  function getBuyLink(product) {
-    for (const field of ["affiliate_url", "product_url"]) {
-      const value = product[field];
-
-      if (typeof value !== "string" || !value.trim()) {
-        continue;
-      }
-
-      try {
-        const url = new URL(value);
-
-        if (url.protocol === "https:" || url.protocol === "http:") {
-          return {
-            href: url.href,
-            affiliate: field === "affiliate_url"
-          };
-        }
-      } catch {
-        // Invalid URL: try the next field.
-      }
-    }
-
-    return null;
   }
 
   // ==========================
@@ -224,6 +195,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     );
 
     plus.type = "button";
+    plus.disabled = item.quantity >= MAX_CART_QUANTITY;
     plus.setAttribute(
       "aria-label",
       `Increase quantity of ${product.name}`
@@ -265,7 +237,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     detailLink.href = imageLink.href;
     actions.appendChild(detailLink);
 
-    const buyLink = getBuyLink(product);
+    const buyLink = getPurchaseUrl(product);
 
     if (buyLink) {
       const buyButton = createElement("a", "cart-buy");
@@ -456,19 +428,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   // ==========================
 
   try {
-    let data;
-    let lastError;
-    for (const url of PRODUCT_DATA_URLS) {
-      try {
-        const response = await fetch(url);
-        if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
-        data = await response.json();
-        break;
-      } catch (error) {
-        lastError = error;
-      }
-    }
-    if (!data) throw lastError || new Error("Could not load products.json");
+    await cartReady;
+    const response = await fetch("/api/products");
+    if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
+    const data = await response.json();
 
     products = Array.isArray(data)
       ? data
