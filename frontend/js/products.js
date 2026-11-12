@@ -178,19 +178,36 @@ document.addEventListener("DOMContentLoaded", async () => {
     const modal = document.createElement("div");
     modal.className = "product-editor-overlay";
     modal.innerHTML = `<form class="product-editor"><h2>Edit Product</h2>
-      <label>Name<input name="name" required></label>
+      <label>
+        <span>Name <span class="required-asterisk">*</span></span>
+        <input name="name" required maxlength="200">
+      </label>
       <label>Brand<input name="brand"></label>
-      <label>Category<input name="category"></label>
+      <label>
+        <span> Category <span class="required-asterisk">*</span></span>
+        <input name="category" required>
+      </label>
       <label>Price<input name="price" type="number" min="0"></label>
       <label>Description<textarea name="description"></textarea></label>
       <label>Ingredients <small>comma separated</small><textarea name="ingredients"></textarea></label>
       <label>Benefits <small>comma separated</small><textarea name="benefits"></textarea></label>
-      <label>Skin types <small>comma separated</small><input name="skinTypes"></label>
-      <label>Concerns <small>comma separated</small><input name="concerns"></label>
+      <label>
+        <span> Skin types <span class="required-asterisk">*</span></span>
+        <small>comma separated</small>
+        <input name="skinTypes" required>
+      </label>
+      <label>
+        <span> Concerns <span class="required-asterisk">*</span></span>
+        <small>comma separated</small>
+        <input name="concerns" required>
+      </label>
       <label>Usage<textarea name="usage"></textarea></label>
       <label>Cautions<textarea name="cautions"></textarea></label>
       <label>Product URL<input name="product_url"></label>
-      <label>Affiliate URL<input name="affiliate_url"></label>
+      <label>
+        <span> Affiliate URL <span class="required-asterisk">*</span></span>
+        <input name="affiliate_url" type="url" required>
+      </label>
       <div class="product-editor-image-field">
         <label>Replace image</label>
 

@@ -411,6 +411,12 @@
   color: #60404d;
 }
 
+/* Required field indicator */
+.product-editor .required-asterisk {
+  color: #dc3545;
+  font-weight: 700;
+}
+
 .product-editor label {
   display: grid;
   gap: 5px;
