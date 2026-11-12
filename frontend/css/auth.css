@@ -1,7 +1,17 @@
 #accountArea { display: inline-flex; align-items: center; vertical-align: middle; flex-wrap: wrap; gap: 12px; margin-left: 12px; min-height: 42px; }
 #accountArea a { color: #a7607a; text-decoration: none; }
 .account-logout { border: 1px solid #d7a8b9; border-radius: 9px; padding: 9px 14px; background: white; color: #a7607a; cursor: pointer; font: inherit; line-height: 1.2; }
-.auth-page { min-height: 85vh; display: flex; justify-content: center; align-items: center; padding: 50px 20px; background: linear-gradient(135deg, #fff9f8, #f9e7ee); }
+
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), 
+              url('../images/2476919.jpg') center/cover fixed no-repeat;
+}
+
 .auth-card { width: 100%; max-width: 460px; padding: 42px; background: white; border: 1px solid #f1dfe6; border-radius: 22px; box-shadow: 0 12px 40px rgba(100,60,75,.08); }
 .auth-card form { display: flex; flex-direction: column; gap: 10px; }
 .auth-card #loginForm { margin-top: 24px; }

@@ -1,8 +1,40 @@
-.admin-home-overview { min-height: 70vh; padding: 48px 6%; background: linear-gradient(120deg, #fff8f4, #fbe4e7); color: #4f3945; }
-.home-overview-heading { margin: 0 auto 24px; max-width: 1400px; }
-.home-overview-heading p { margin: 0 0 6px; color: #bd7890; font-size: 12px; font-weight: 700; letter-spacing: 2px; }
-.home-overview-heading h1 { margin: 0; color: #4f3945; font-family: Georgia, serif; font-size: 38px; }
-.home-overview-heading span, .home-overview-panel > p { color: #806c76; }
+.admin-home-overview {
+  min-height: 100vh;
+  padding: 40px 20px;
+  background: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), 
+              url('../images/2476919.jpg') center/cover fixed no-repeat;
+}
+
+.home-overview-heading { 
+  margin: 0 auto 24px; 
+  max-width: 1400px; 
+}
+
+.home-overview-heading p { 
+  margin: 0 0 6px; 
+  color: #ffffff; 
+  text-shadow: 0 4px 16px rgba(0, 0, 0, 0.55);
+  font-size: 12px; 
+  font-weight: 700; 
+  letter-spacing: 2px; 
+}
+
+.home-overview-heading h1 { 
+  margin: 0; 
+  color: #ffffff; 
+  text-shadow: 0 4px 16px rgba(0, 0, 0, 0.55);
+  font-family: Georgia, serif; 
+  font-size: 38px; 
+}
+
+.home-overview-heading span { 
+  color: #ffffff; 
+  text-shadow: 0 4px 16px rgba(0, 0, 0, 0.55);
+}
+
+.home-overview-panel > p { 
+  color: #806c76; 
+}
 .home-overview-cards { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin: 0 auto 16px; max-width: 1400px; }
 .home-overview-card { display: flex; justify-content: space-between; align-items: center; min-height: 82px; padding: 15px; border: 1px solid #f0dfe5; border-radius: 10px; background: rgba(255,255,255,.9); }
 .home-overview-card span, .home-overview-card strong { display: block; }
