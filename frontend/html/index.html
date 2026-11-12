@@ -7,11 +7,11 @@
 
     <title>GlowGuide | Smart Skincare Search</title>
 
-    <link rel="stylesheet" href="../css/style.css?v=20261112-home-actions-hover">
+    <link rel="stylesheet" href="../css/style.css?v=20261112-home-search-suggestions">
     <link rel="stylesheet" href="../css/auth.css">
     <script src="../js/auth.js" defer></script>
     <script src="../js/cart.js" defer></script>
-    <script src="../js/main.js?v=20261112-home-search-reset" defer></script>
+    <script src="../js/main.js?v=20261112-home-search-suggestions" defer></script>
 </head>
 
 <body>
@@ -51,18 +51,25 @@
                     and concerns.
                 </p>
 
-                <div class="search-box">
+                <form id="homeSearchForm" class="search-box" role="search">
                     <input
                         id="homeSearchInput"
                         type="search"
                         placeholder="Search products, brands or ingredients..."
                         aria-label="Search products"
+                        aria-autocomplete="list"
+                        aria-controls="homeSearchSuggestions"
+                        aria-expanded="false"
+                        required
                     >
 
-                    <button type="button" id="homeSearchButton">
+                    <button type="submit" id="homeSearchButton">
                         Search
                     </button>
-                </div>
+
+                    <div id="homeSearchSuggestions" class="search-suggestions"
+                         role="listbox" aria-label="Suggested products" hidden></div>
+                </form>
 
                 <div class="hero-actions">
 

@@ -158,64 +158,175 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
 document.addEventListener("DOMContentLoaded", () => {
+  const homeSearchForm = document.getElementById("homeSearchForm");
   const homeSearchInput = document.getElementById("homeSearchInput");
   const homeSearchButton = document.getElementById("homeSearchButton");
+  const homeSearchSuggestions = document.getElementById("homeSearchSuggestions");
 
-  if (homeSearchInput && homeSearchButton) {
+  if (homeSearchForm && homeSearchInput && homeSearchButton && homeSearchSuggestions) {
+    let productCatalogPromise;
+    let suggestionRequestId = 0;
+
     window.addEventListener("pageshow", () => {
       homeSearchButton.disabled = false;
       homeSearchButton.textContent = "Search";
     });
 
-    const handleHomeSearch = async () => {
-      const term = homeSearchInput.value.trim();
+    function loadProducts() {
+      if (!productCatalogPromise) {
+        productCatalogPromise = (async () => {
+          const response = await fetch("/api/products");
+          if (!response.ok) {
+            throw new Error(`${response.status} ${response.statusText}`);
+          }
 
+          const catalog = await response.json();
+          const products = Array.isArray(catalog) ? catalog : catalog.products;
+          if (!Array.isArray(products)) {
+            throw new Error("Invalid product data");
+          }
+
+          return products;
+        })().catch(error => {
+          productCatalogPromise = null;
+          throw error;
+        });
+      }
+
+      return productCatalogPromise;
+    }
+
+    function getProductMatchScore(product, keyword) {
+      const name = String(product.name || "").toLowerCase();
+      const brand = String(product.brand || "").toLowerCase();
+      const category = String(product.category || "").toLowerCase();
+      const ingredients = Array.isArray(product.ingredients)
+        ? product.ingredients.join(" ").toLowerCase()
+        : String(product.ingredients || "").toLowerCase();
+      const description = String(product.description || "").toLowerCase();
+
+      if (name === keyword) return 100;
+      if (name.startsWith(keyword)) return 90;
+      if (brand === keyword) return 80;
+      if (brand.startsWith(keyword)) return 70;
+      if (name.includes(keyword)) return 60;
+      if (brand.includes(keyword)) return 50;
+      if (category.includes(keyword)) return 40;
+      if (ingredients.includes(keyword)) return 30;
+      if (description.includes(keyword)) return 20;
+      return 0;
+    }
+
+    function closeSuggestions() {
+      suggestionRequestId += 1;
+      homeSearchSuggestions.hidden = true;
+      homeSearchInput.setAttribute("aria-expanded", "false");
+    }
+
+    async function updateSuggestions(term) {
+      const requestId = ++suggestionRequestId;
       if (!term) {
-        window.location.href = "products.html";
+        closeSuggestions();
         return;
       }
 
+      homeSearchSuggestions.replaceChildren();
+      homeSearchSuggestions.hidden = false;
+      homeSearchInput.setAttribute("aria-expanded", "true");
+      const loading = document.createElement("p");
+      loading.className = "search-suggestions-message";
+      loading.textContent = "Loading suggestions...";
+      homeSearchSuggestions.appendChild(loading);
+
+      try {
+        const products = await loadProducts();
+        if (requestId !== suggestionRequestId) return;
+
+        const matches = products
+          .map(product => ({
+            product,
+            score: getProductMatchScore(product, term.toLowerCase())
+          }))
+          .filter(match => match.score > 0 && match.product.id != null)
+          .sort((a, b) => b.score - a.score)
+          .slice(0, 5);
+
+        homeSearchSuggestions.replaceChildren();
+        if (!matches.length) {
+          const emptyMessage = document.createElement("p");
+          emptyMessage.className = "search-suggestions-message";
+          emptyMessage.textContent = "No matching products found.";
+          homeSearchSuggestions.appendChild(emptyMessage);
+          return;
+        }
+
+        matches.forEach(({ product }) => {
+          const suggestion = document.createElement("a");
+          suggestion.className = "search-suggestion";
+          suggestion.role = "option";
+          suggestion.href =
+            `product_detail.html?id=${encodeURIComponent(product.id)}`;
+
+          const name = document.createElement("span");
+          name.className = "search-suggestion-name";
+          name.textContent = product.name || "Skincare product";
+
+          const detail = document.createElement("span");
+          detail.className = "search-suggestion-detail";
+          detail.textContent = [product.brand, product.category]
+            .filter(Boolean)
+            .join(" · ");
+
+          suggestion.append(name, detail);
+          homeSearchSuggestions.appendChild(suggestion);
+        });
+      } catch (error) {
+        if (requestId !== suggestionRequestId) return;
+        console.error("Could not load product suggestions:", error);
+        homeSearchSuggestions.replaceChildren();
+        const errorMessage = document.createElement("p");
+        errorMessage.className = "search-suggestions-message";
+        errorMessage.textContent = "Could not load suggestions. Please try again.";
+        homeSearchSuggestions.appendChild(errorMessage);
+      }
+    }
+
+    homeSearchInput.addEventListener("input", () => {
+      homeSearchInput.setCustomValidity("");
+      updateSuggestions(homeSearchInput.value.trim());
+    });
+
+    homeSearchInput.addEventListener("keydown", event => {
+      if (event.key === "Escape") closeSuggestions();
+    });
+
+    document.addEventListener("click", event => {
+      if (!homeSearchForm.contains(event.target)) closeSuggestions();
+    });
+
+    homeSearchForm.addEventListener("submit", async event => {
+      event.preventDefault();
+      const term = homeSearchInput.value.trim();
+      if (!term) {
+        homeSearchInput.setCustomValidity("Please enter a product, brand, or ingredient.");
+        homeSearchInput.reportValidity();
+        return;
+      }
+
+      homeSearchInput.setCustomValidity("");
       if (homeSearchButton.disabled) return;
       homeSearchButton.disabled = true;
       homeSearchButton.textContent = "Searching...";
+      closeSuggestions();
 
       try {
-        const response = await fetch("/api/products");
-        if (!response.ok) {
-          throw new Error(`${response.status} ${response.statusText}`);
-        }
-
-        const catalog = await response.json();
-        const products = Array.isArray(catalog) ? catalog : catalog.products;
-        if (!Array.isArray(products)) {
-          throw new Error("Invalid product data");
-        }
-
-        const keyword = term.toLowerCase();
+        const products = await loadProducts();
         const matches = products
-          .map(product => {
-            const name = String(product.name || "").toLowerCase();
-            const brand = String(product.brand || "").toLowerCase();
-            const category = String(product.category || "").toLowerCase();
-            const ingredients = Array.isArray(product.ingredients)
-              ? product.ingredients.join(" ").toLowerCase()
-              : String(product.ingredients || "").toLowerCase();
-            const description = String(product.description || "").toLowerCase();
-            let score = 0;
-
-            if (name === keyword) score = 100;
-            else if (name.startsWith(keyword)) score = 90;
-            else if (brand === keyword) score = 80;
-            else if (brand.startsWith(keyword)) score = 70;
-            else if (name.includes(keyword)) score = 60;
-            else if (brand.includes(keyword)) score = 50;
-            else if (category.includes(keyword)) score = 40;
-            else if (ingredients.includes(keyword)) score = 30;
-            else if (description.includes(keyword)) score = 20;
-
-            return { product, score };
-          })
-          .filter(match => match.score > 0)
+          .map(product => ({
+            product,
+            score: getProductMatchScore(product, term.toLowerCase())
+          }))
+          .filter(match => match.score > 0 && match.product.id != null)
           .sort((a, b) => b.score - a.score);
 
         if (matches.length) {
@@ -230,17 +341,9 @@ document.addEventListener("DOMContentLoaded", () => {
         window.location.href = destination.toString();
       } catch (error) {
         console.error("Could not search products:", error);
-        alert("Không thể tìm sản phẩm lúc này. Vui lòng thử lại.");
+        alert("Could not search products right now. Please try again.");
         homeSearchButton.disabled = false;
         homeSearchButton.textContent = "Search";
-      }
-    };
-
-    homeSearchButton.addEventListener("click", handleHomeSearch);
-    homeSearchInput.addEventListener("keydown", event => {
-      if (event.key === "Enter") {
-        event.preventDefault();
-        handleHomeSearch();
       }
     });
   }
