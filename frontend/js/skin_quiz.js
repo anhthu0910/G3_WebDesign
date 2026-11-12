@@ -212,7 +212,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     dry: "Dry Skin",
     normal: "Normal Skin",
     oily: "Oily Skin",
-    combination: "Combination Skin"
+    combination: "Combination Skin",
+    sensitive: "Sensitive Skin"
   };
 
   const concernLabels = {
@@ -297,7 +298,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       dry: 0,
       normal: 0,
       oily: 0,
-      combination: 0
+      combination: 0,
+      sensitive: 0
     };
 
     let concern = "";
@@ -306,7 +308,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const answer =
         questions[questionIndex].answers[answerIndex];
 
-      if (answer.type) {
+      if (Object.hasOwn(scores, answer.type)) {
         scores[answer.type]++;
       }
 
@@ -363,7 +365,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const concern = document.createElement("p");
     concern.textContent =
-      `Your main concern: ${concernLabels[result.concern]}`;
+      `Your main concern: ${concernLabels[result.concern] || result.concern || "Not specified"}`;
 
     const description = document.createElement("p");
 
@@ -408,18 +410,31 @@ document.addEventListener("DOMContentLoaded", async () => {
       actions
     );
 
-    // Save profile locally for future AI integration.
+    const savedProfile = { skinType: result.skinType, concern: result.concern, inconclusive: result.inconclusive };
     try {
       localStorage.setItem(
-        "glowguide_skin_profile",
-        JSON.stringify({
-          skinType: result.skinType,
-          concern: result.concern,
-          inconclusive: result.inconclusive
-        })
+        currentUser?.role === "user" ? `glowguide_skin_profile:user:${currentUser.id}` : "glowguide_skin_profile",
+        JSON.stringify(savedProfile)
       );
     } catch (error) {
       console.warn("Skin profile could not be saved:", error);
+    }
+    if (currentUser?.role === "user") {
+      const status = document.createElement("p");
+      status.setAttribute("role", "status");
+      const retry = document.createElement("button");
+      retry.type = "button";retry.textContent = "Retry saving result";
+      const profile = document.createElement("a");
+      profile.href = "profile.html";profile.textContent = "View saved profile";
+      async function saveResult() {
+        retry.hidden = true;status.textContent = "Saving result...";
+        try {
+          await authRequest("/api/user/profile", { method: "PUT", body: JSON.stringify({ quiz_result: savedProfile }) });
+          status.textContent = "Result saved to your account.";
+        } catch { status.textContent = "Could not save. Your result remains visible; sign in again if your session expired, then retry.";retry.hidden = false; }
+      }
+      retry.addEventListener("click", saveResult);
+      resultBox.append(status, retry, profile);saveResult();
     }
   }
 
