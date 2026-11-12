@@ -7,11 +7,11 @@
 
     <title>GlowGuide | Smart Skincare Search</title>
 
-    <link rel="stylesheet" href="../css/style.css?v=20261111-home-buy-now">
+    <link rel="stylesheet" href="../css/style.css?v=20261112-home-actions-hover">
     <link rel="stylesheet" href="../css/auth.css">
     <script src="../js/auth.js" defer></script>
     <script src="../js/cart.js" defer></script>
-    <script src="../js/main.js?v=20261111-safe-cleanup" defer></script>
+    <script src="../js/main.js?v=20261112-home-search-reset" defer></script>
 </head>
 
 <body>
@@ -53,11 +53,13 @@
 
                 <div class="search-box">
                     <input
+                        id="homeSearchInput"
                         type="search"
                         placeholder="Search products, brands or ingredients..."
+                        aria-label="Search products"
                     >
 
-                    <button type="button">
+                    <button type="button" id="homeSearchButton">
                         Search
                     </button>
                 </div>

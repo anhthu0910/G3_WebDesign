@@ -152,6 +152,25 @@ nav a:hover {
   cursor: pointer;
 }
 
+.hero .search-box button {
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.hero .search-box button:not(:disabled):hover {
+  background: #c7798b;
+  box-shadow: 0 6px 16px rgba(125, 55, 75, 0.25);
+  transform: translateY(-2px);
+}
+
+.hero .search-box button:not(:disabled):active {
+  transform: translateY(0);
+}
+
+.hero .search-box button:focus-visible {
+  outline: 3px solid #8e4d60;
+  outline-offset: 3px;
+}
+
 .hero-actions a,
 .product-card>a,
 .view-all-btn,
@@ -169,6 +188,33 @@ nav a:hover {
   background: white;
   color: #b36e80;
   border: 1px solid #e8bdc5;
+}
+
+.hero-actions a {
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.hero-actions a:first-child:hover {
+  background: #c7798b;
+  box-shadow: 0 6px 16px rgba(125, 55, 75, 0.25);
+  transform: translateY(-2px);
+}
+
+.hero-actions a+a:hover {
+  background: var(--pink);
+  border-color: var(--pink);
+  color: white;
+  box-shadow: 0 6px 16px rgba(125, 55, 75, 0.25);
+  transform: translateY(-2px);
+}
+
+.hero-actions a:active {
+  transform: translateY(0);
+}
+
+.hero-actions a:focus-visible {
+  outline: 3px solid #8e4d60;
+  outline-offset: 3px;
 }
 
 .skin-match,

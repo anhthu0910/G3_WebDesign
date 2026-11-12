@@ -158,6 +158,93 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
 document.addEventListener("DOMContentLoaded", () => {
+  const homeSearchInput = document.getElementById("homeSearchInput");
+  const homeSearchButton = document.getElementById("homeSearchButton");
+
+  if (homeSearchInput && homeSearchButton) {
+    window.addEventListener("pageshow", () => {
+      homeSearchButton.disabled = false;
+      homeSearchButton.textContent = "Search";
+    });
+
+    const handleHomeSearch = async () => {
+      const term = homeSearchInput.value.trim();
+
+      if (!term) {
+        window.location.href = "products.html";
+        return;
+      }
+
+      if (homeSearchButton.disabled) return;
+      homeSearchButton.disabled = true;
+      homeSearchButton.textContent = "Searching...";
+
+      try {
+        const response = await fetch("/api/products");
+        if (!response.ok) {
+          throw new Error(`${response.status} ${response.statusText}`);
+        }
+
+        const catalog = await response.json();
+        const products = Array.isArray(catalog) ? catalog : catalog.products;
+        if (!Array.isArray(products)) {
+          throw new Error("Invalid product data");
+        }
+
+        const keyword = term.toLowerCase();
+        const matches = products
+          .map(product => {
+            const name = String(product.name || "").toLowerCase();
+            const brand = String(product.brand || "").toLowerCase();
+            const category = String(product.category || "").toLowerCase();
+            const ingredients = Array.isArray(product.ingredients)
+              ? product.ingredients.join(" ").toLowerCase()
+              : String(product.ingredients || "").toLowerCase();
+            const description = String(product.description || "").toLowerCase();
+            let score = 0;
+
+            if (name === keyword) score = 100;
+            else if (name.startsWith(keyword)) score = 90;
+            else if (brand === keyword) score = 80;
+            else if (brand.startsWith(keyword)) score = 70;
+            else if (name.includes(keyword)) score = 60;
+            else if (brand.includes(keyword)) score = 50;
+            else if (category.includes(keyword)) score = 40;
+            else if (ingredients.includes(keyword)) score = 30;
+            else if (description.includes(keyword)) score = 20;
+
+            return { product, score };
+          })
+          .filter(match => match.score > 0)
+          .sort((a, b) => b.score - a.score);
+
+        if (matches.length) {
+          const destination = new URL("product_detail.html", window.location.href);
+          destination.searchParams.set("id", matches[0].product.id);
+          window.location.href = destination.toString();
+          return;
+        }
+
+        const destination = new URL("products.html", window.location.href);
+        destination.searchParams.set("q", term);
+        window.location.href = destination.toString();
+      } catch (error) {
+        console.error("Could not search products:", error);
+        alert("Không thể tìm sản phẩm lúc này. Vui lòng thử lại.");
+        homeSearchButton.disabled = false;
+        homeSearchButton.textContent = "Search";
+      }
+    };
+
+    homeSearchButton.addEventListener("click", handleHomeSearch);
+    homeSearchInput.addEventListener("keydown", event => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        handleHomeSearch();
+      }
+    });
+  }
+
   const skinButtons = document.querySelectorAll("[data-skin]");
   const concernButtons = document.querySelectorAll("[data-concern]");
   let selectedSkin = "";

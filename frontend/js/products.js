@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const resultCount = document.getElementById("resultCount");
   const emptyState = document.getElementById("emptyState");
   const params = new URLSearchParams(window.location.search);
+  const requestedQuery = params.get("q");
   const requestedAlert = params.get("issue");
   const supportedAlerts = new Set([
     "missing_image",
@@ -367,6 +368,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const skin = params.get("skin");
   const concern = params.get("concern");
+
+  if (requestedQuery && searchInput) {
+    searchInput.value = requestedQuery;
+  }
 
   const skinInput = Array.from(skinCheckboxes)
     .find(input => input.value === skin);
