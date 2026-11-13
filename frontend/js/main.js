@@ -93,7 +93,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     const ids = new Set(getCart().map(item => String(item.id)));
     container.querySelectorAll(".home-cart-btn[data-product-id]").forEach(button => {
       const isAdded = ids.has(button.dataset.productId);
-      button.textContent = isAdded ? "Added to Cart" : "Add to Cart";
+      button.innerHTML = `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2 3h3l3 12h11l3-9H6"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>`;
+      button.setAttribute("aria-label", isAdded ? "Remove from cart" : "Add to cart");
+      button.title = isAdded ? "Remove from cart" : "Add to cart";
+      button.setAttribute("aria-pressed", String(isAdded));
       button.classList.toggle("added", isAdded);
       button.setAttribute("aria-pressed", String(isAdded));
     });
@@ -140,14 +143,17 @@ document.addEventListener("DOMContentLoaded", async () => {
       name.textContent = product.name || "";
       const link = document.createElement("a");
       link.href = `product_detail.html?id=${encodeURIComponent(product.id)}`;
-      link.textContent = "View Analysis";
+      link.textContent = "View";
       const buyLink = createPurchaseLink(product, "home-buy-link");
       const cartButton = document.createElement("button");
       cartButton.type = "button";
       cartButton.className = "home-cart-btn";
 
       cartButton.dataset.productId = product.id;
-      card.append(media, brand, name, link, buyLink, cartButton);
+      const actions = document.createElement("div");
+      actions.className = "home-purchase-actions";
+      actions.append(buyLink, cartButton);
+      card.append(media, brand, name, link, actions);
       container.appendChild(card);
     });
     updateHomeCartButtons();
@@ -169,7 +175,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     window.addEventListener("pageshow", () => {
       homeSearchButton.disabled = false;
-      homeSearchButton.textContent = "Search";
+      homeSearchButton.removeAttribute("aria-busy");
     });
 
     function loadProducts() {
@@ -316,7 +322,7 @@ document.addEventListener("DOMContentLoaded", () => {
       homeSearchInput.setCustomValidity("");
       if (homeSearchButton.disabled) return;
       homeSearchButton.disabled = true;
-      homeSearchButton.textContent = "Searching...";
+      homeSearchButton.setAttribute("aria-busy", "true");
       closeSuggestions();
 
       try {
@@ -343,7 +349,7 @@ document.addEventListener("DOMContentLoaded", () => {
         console.error("Could not search products:", error);
         alert("Could not search products right now. Please try again.");
         homeSearchButton.disabled = false;
-        homeSearchButton.textContent = "Search";
+        homeSearchButton.removeAttribute("aria-busy");
       }
     });
   }

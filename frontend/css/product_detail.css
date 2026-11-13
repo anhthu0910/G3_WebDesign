@@ -329,3 +329,6 @@
   vertical-align: middle;
   margin-right: 6px;
 }
+/* Use the same corner radius for all product action buttons. */
+.detail-actions .detail-button { border-radius: 14px; }
+.detail-actions #cartButton { border-radius: 14px; }
