@@ -66,9 +66,13 @@ Mở PowerShell thứ hai tại thư mục gốc dự án, kích hoạt cùng m�
 ```powershell
 .\.venv\Scripts\Activate.ps1
 python -m unittest discover -s tests -v
+node tests/cart_isolation.cjs
+node tests/cart_transition.cjs
 ```
 
 Kết quả thành công kết thúc với `OK`. Bộ test dùng database kiểm thử riêng và mock các lời gọi AI; không cần cấu hình Gemini API key. Nếu PowerShell chặn kích hoạt, dùng cách `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass` ở bước 2.
+
+Hai lệnh `node` kiểm tra giỏ hàng và cách chấm điểm quiz phía trình duyệt; cần cài Node.js 18 trở lên. Mỗi lệnh in ra một dòng `... passed.` khi đạt. Lệnh `discover` chỉ tìm file có tên bắt đầu bằng `test_`, nên hai file `.cjs` phải chạy riêng như trên.
 
 ### macOS/Linux
 
@@ -82,7 +86,7 @@ python -m pip install -r requirements-dev.txt
 python -m uvicorn backend.main:app --reload --host 127.0.0.1 --port 8000
 ```
 
-Trong terminal khác, kích hoạt lại `.venv` rồi chạy `python -m unittest discover -s tests -v`.
+Trong terminal khác, kích hoạt lại `.venv` rồi chạy `python -m unittest discover -s tests -v`, `node tests/cart_isolation.cjs` và `node tests/cart_transition.cjs`.
 
 ### AI Consultant (tùy chọn)
 
@@ -176,6 +180,14 @@ Render xác nhận filesystem tạm thời tại [Deploys](https://render.com/do
 - Chưa tạo dịch vụ Render, chưa publish GitHub, chưa có link HTTPS công khai. Cần chủ tài khoản kết nối repo, nhập secrets và chọn gói hosting theo hướng dẫn.
 - Một số chỉ số/tính năng có giới hạn từ trước: quiz submissions trong analytics là 0, AI test Admin trả trạng thái hướng dẫn, home content chưa bảo đảm được mọi vùng giao diện sử dụng. Không báo các mục này là đã hoàn thiện nghiệp vụ.
 - Bản sao trước chỉnh sửa: `data/backups/pre_render_20261030.db`, integrity `ok`. SHA256 database gốc trước/sau: `bc1309a8ac9a2cb3721a7c7cfed9e7dace3f8a96a9c14253ee3480533c643456`.
+
+## Kết quả kiểm thử ngày 13/11/2026
+
+- 21 test Python đạt (`python -m unittest discover -s tests`), gồm các nhóm của ngày 30/10 và thêm: kiểm tra dữ liệu quiz, đếm lượt hỏi AI, click mua và lượt hoàn thành quiz, tính năng tài khoản người dùng, audit log cho quiz và nội dung trang chủ, lệnh `create_admin`.
+- Hai test Node.js `cart_isolation.cjs` và `cart_transition.cjs` đạt.
+- Lượt hoàn thành quiz nay đã được ghi vào bảng `quiz_completions` và hiển thị trên Admin Home; ghi chú "quiz submissions trong analytics là 0" ở mục ngày 30/10 không còn đúng.
+- Audit log nay ghi cả thao tác tạo, sửa, xoá câu hỏi quiz và sửa nội dung trang chủ, ngoài sản phẩm và người dùng.
+- `python -m backend.create_admin` báo "Username or email already exists." khi trùng tên hoặc email, thay vì dừng với lỗi `IntegrityError`.
 
 ## File tạo/sửa
 
