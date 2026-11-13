@@ -119,6 +119,38 @@ class DeploymentTests(unittest.TestCase):
         with patch.object(ai_service, "client", None):
             self.assertEqual(self.client.post("/api/chat", json={"message": "Dry skin?"}).status_code, 503)
 
+    def test_ai_timeout_falls_back_without_sdk_retries(self):
+        from httpx import ReadTimeout
+        fake = Mock()
+        fake.models.generate_content.side_effect = [ReadTimeout("timed out"), Mock(text="Fast reply")]
+        with patch.object(ai_service, "client", fake), patch.object(ai_service, "MODEL_NAMES", ["first", "second"]):
+            self.assertEqual(ai_service.generate_skincare_reply("Hello", []), "Fast reply")
+        self.assertEqual(fake.models.generate_content.call_count, 2)
+        for call in fake.models.generate_content.call_args_list:
+            options = call.kwargs["config"].http_options
+            self.assertEqual(options.retry_options.attempts, 1)
+            self.assertLessEqual(options.timeout, 12000)
+
+    def test_ai_total_deadline_stops_additional_models(self):
+        fake = Mock()
+        fake.models.generate_content.side_effect = APIError(504, {"error": {"message": "timeout"}})
+        with patch.object(ai_service, "client", fake), patch.object(ai_service, "MODEL_NAMES", ["first", "second", "third"]), patch.object(ai_service, "monotonic", side_effect=[0, 0, 12, 24]):
+            with self.assertRaises(TimeoutError):
+                ai_service.generate_skincare_reply("Hello", [])
+        self.assertEqual(fake.models.generate_content.call_count, 2)
+        for call in fake.models.generate_content.call_args_list:
+            self.assertGreaterEqual(call.kwargs["config"].http_options.timeout, 10000)
+
+    def test_ai_does_not_retry_invalid_credentials_or_shared_quota(self):
+        for status in (400, 401, 403, 429):
+            with self.subTest(status=status):
+                fake = Mock()
+                fake.models.generate_content.side_effect = APIError(status, {"error": {"message": "request rejected"}})
+                with patch.object(ai_service, "client", fake), patch.object(ai_service, "MODEL_NAMES", ["first", "second"]):
+                    with self.assertRaises(APIError):
+                        ai_service.generate_skincare_reply("Hello", [])
+                self.assertEqual(fake.models.generate_content.call_count, 1)
+
 
 if __name__ == "__main__":
     unittest.main()

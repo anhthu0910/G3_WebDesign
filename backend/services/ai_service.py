@@ -1,5 +1,8 @@
 import os
 import logging
+from time import monotonic
+
+from httpx import TimeoutException
 
 from backend.config import BASE_DIR
 from google import genai
@@ -23,6 +26,9 @@ MODEL_NAMES = [
 ]
 
 client = genai.Client(api_key=API_KEY) if API_KEY else None
+REQUEST_TIMEOUT_MS = 12000
+MIN_REQUEST_TIMEOUT_MS = 10000
+TOTAL_TIMEOUT_SECONDS = 25
 
 SYSTEM_INSTRUCTION = """
 You are GlowGuide, an educational AI skincare consultant.
@@ -76,6 +82,7 @@ You are not a dermatologist and do not replace medical care.
 def generate_skincare_reply(message: str, history: list) -> str:
     if client is None:
         raise RuntimeError("GEMINI_API_KEY is not configured")
+    deadline = monotonic() + TOTAL_TIMEOUT_SECONDS
 
     contents = []
 
@@ -124,6 +131,10 @@ ingredient data is not verified. Answer the user's question naturally.
     last_error = None
 
     for model_name in MODEL_NAMES:
+        remaining_ms = int((deadline - monotonic()) * 1000)
+        # Gemini rejects requests with a deadline shorter than 10 seconds.
+        if remaining_ms < MIN_REQUEST_TIMEOUT_MS:
+            raise TimeoutError("AI response deadline exceeded")
         try:
             logging.info("Trying Gemini: %s", model_name)
 
@@ -132,7 +143,11 @@ ingredient data is not verified. Answer the user's question naturally.
                 contents=contents,
                 config=types.GenerateContentConfig(
                     system_instruction=SYSTEM_INSTRUCTION,
-                    max_output_tokens=2048
+                    max_output_tokens=2048,
+                    http_options=types.HttpOptions(
+                        timeout=min(REQUEST_TIMEOUT_MS, remaining_ms),
+                        retry_options=types.HttpRetryOptions(attempts=1),
+                    ),
                 )
             )
 
@@ -148,6 +163,9 @@ ingredient data is not verified. Answer the user's question naturally.
                 model_name
             )
 
+        except (TimeoutError, TimeoutException) as error:
+            last_error = error
+            logging.warning("Gemini %s timed out; trying the next model", model_name)
         except APIError as error:
             last_error = error
             logging.warning(
