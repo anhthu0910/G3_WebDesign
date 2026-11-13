@@ -906,6 +906,12 @@ h3 {
   flex: 0 0 44px;
   border-radius: 14px;
 }
+.detail-actions #cartButton {
+  width: 52px;
+  min-width: 52px;
+  height: 52px;
+  flex-basis: 52px;
+}
 .home-purchase-actions .home-cart-btn svg,
 .product-buttons .product-cart-btn svg,
 .detail-actions #cartButton svg {
