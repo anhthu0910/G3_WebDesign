@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   const chatMessages = document.getElementById("chatMessages");
   const chatForm = document.getElementById("chatForm");
   const messageInput = document.getElementById("messageInput");
@@ -126,8 +126,34 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   const productId = new URLSearchParams(window.location.search).get("product");
-  if (productId && typeof products !== "undefined") {
-    const product = products.find(item => String(item.id) === productId);
+  try {
+    const response = await fetch("/api/products");
+    if (!response.ok) throw new Error("Catalog unavailable");
+    const data = await response.json();
+    const catalog = Array.isArray(data) ? data : data.products;
+    const sidebar = document.querySelector(".chat-sidebar") || document.querySelector("aside");
+    if (sidebar && Array.isArray(catalog)) {
+      const panel = document.createElement("div");
+      panel.className = "sidebar-card consultant-products";
+      const heading = document.createElement("h3"); heading.textContent = "Explore products";
+      panel.appendChild(heading);
+      const ordered = [...catalog].sort((a, b) => Number(String(b.id) === productId) - Number(String(a.id) === productId));
+      ordered.slice(0, 4).forEach(item => {
+        const link = document.createElement("a");
+        link.href = `ai_consultant.html?product=${encodeURIComponent(item.id)}`;
+        const image = document.createElement("img");
+        image.alt = item.name; image.loading = "lazy";
+        const fallback = document.createElement("span");
+        fallback.className = "consultant-product-fallback"; fallback.textContent = "??";
+        if (item.image) { image.src = item.image; image.onerror = () => image.replaceWith(fallback); link.appendChild(image); }
+        else link.appendChild(fallback);
+        const name = document.createElement("span"); name.textContent = item.name;
+        link.appendChild(name); panel.appendChild(link);
+      });
+      sidebar.prepend(panel);
+    }
+    if (!productId) return;
+    const product = catalog.find(item => String(item.id) === productId);
     if (product) {
       messageInput.value =
         `Is ${product.brand} ${product.name} suitable for my skin?`;
@@ -136,5 +162,5 @@ document.addEventListener("DOMContentLoaded", () => {
         "bot"
       );
     }
-  }
+  } catch (error) { console.warn("Could not load consultant products:", error); }
 });
