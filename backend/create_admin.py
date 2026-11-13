@@ -1,4 +1,5 @@
 import getpass
+import sqlite3
 
 from backend.database import get_connection, init_database
 from backend.services.password_service import hash_password
@@ -19,8 +20,12 @@ def main():
     if len(password) < 12 or password != confirm:
         print("Passwords must match and contain at least 12 characters.")
         return
-    with get_connection() as conn:
-        conn.execute("INSERT INTO users (username, email, password_hash, role) VALUES (?, ?, ?, 'admin')", (username, email, hash_password(password)))
+    try:
+        with get_connection() as conn:
+            conn.execute("INSERT INTO users (username, email, password_hash, role) VALUES (?, ?, ?, 'admin')", (username, email, hash_password(password)))
+    except sqlite3.IntegrityError:
+        print("Username or email already exists.")
+        return
     print("Admin account created.")
 
 
