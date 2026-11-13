@@ -44,6 +44,26 @@ class UserFeaturesTests(unittest.TestCase):
         self.client.post('/api/auth/logout')
         self.assertEqual(self.client.get('/cart.html', follow_redirects=False).status_code, 307)
 
+    def test_quiz_and_content_changes_are_audited(self):
+        with get_connection() as db:
+            db.execute("UPDATE users SET role='admin' WHERE id=?", (self.other['id'],))
+        self.assertEqual(self.login(self.other_name, role='admin').status_code, 200)
+        question = {'title': 'Audit question', 'answers': [{'text': 'Dry', 'type': 'dry'}]}
+        created = self.client.post('/api/admin/quiz', json=question)
+        self.assertEqual(created.status_code, 201)
+        qid = created.json()['id']
+        self.assertEqual(self.client.put(f'/api/admin/quiz/{qid}', json=question).status_code, 200)
+        self.assertEqual(self.client.delete(f'/api/admin/quiz/{qid}').status_code, 200)
+        self.assertEqual(self.client.put('/api/admin/content/hero_title', json={'value': 'Hello'}).status_code, 200)
+        with get_connection() as db:
+            rows = db.execute("SELECT action, entity, entity_id FROM admin_audit_logs WHERE admin_user_id=? ORDER BY id", (self.other['id'],)).fetchall()
+        self.assertEqual([tuple(row) for row in rows], [
+            ('create', 'quiz_question', str(qid)),
+            ('update', 'quiz_question', str(qid)),
+            ('delete', 'quiz_question', str(qid)),
+            ('update', 'home_content', 'hero_title'),
+        ])
+        
     def test_product_edits_preserve_fields_and_audit_changes(self):
         with get_connection() as db:
             db.execute("UPDATE users SET role='admin' WHERE id=?", (self.other['id'],))
