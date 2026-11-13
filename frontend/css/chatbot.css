@@ -473,3 +473,35 @@
 .consultant-products img, .consultant-product-fallback { width: 58px; height: 68px; object-fit: contain; flex: 0 0 58px; background: #fff7f9; border-radius: 8px; }
 .consultant-product-fallback { display: grid; place-items: center; font-size: 30px; }
 .consultant-products a:focus-visible { outline: 2px solid #9d3f5e; }
+
+/* Catalog images are attached to the assistant reply that recommends them. */
+.chat-product-cards {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+.chat-messages .message-content .chat-product-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid #ead8dc;
+  border-radius: 12px;
+  background: #fff;
+  color: #58474b;
+  text-decoration: none;
+}
+.chat-product-card img {
+  width: 64px;
+  height: 76px;
+  flex: 0 0 64px;
+  object-fit: contain;
+  border-radius: 8px;
+  background: #fffaf7;
+}
+.chat-product-card > span { min-width: 0; }
+.chat-product-card strong { display: block; font-size: 13px; }
+.chat-product-action { display: block; margin-top: 5px; font-size: 12px; color: #9d3f5e; }
+.chat-product-card:hover { border-color: #d98e9e; }
+.chat-product-card:focus-visible { outline: 2px solid #9d3f5e; outline-offset: 3px; }

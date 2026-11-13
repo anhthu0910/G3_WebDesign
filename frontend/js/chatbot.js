@@ -13,12 +13,24 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const welcomeHTML = chatMessages.innerHTML;
   let conversationHistory = [];
+  const catalogPromise = fetch("/api/products")
+    .then(async response => {
+      if (!response.ok) throw new Error("Catalog unavailable");
+      const data = await response.json();
+      const catalog = Array.isArray(data) ? data : data.products;
+      if (!Array.isArray(catalog)) throw new Error("Invalid catalog");
+      return catalog;
+    })
+    .catch(error => {
+      console.warn("Could not load consultant products:", error);
+      return [];
+    });
 
   function scrollToBottom() {
     chatMessages.scrollTop = chatMessages.scrollHeight;
   }
 
-  function addMessage(text, role = "bot") {
+  function addMessage(text, role = "bot", recommendedProducts = []) {
     const message = document.createElement("div");
     message.className =
       `message ${role === "user" ? "user-message" : "bot-message"}`;
@@ -29,7 +41,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const content = document.createElement("div");
     content.className = "message-content";
-    const messageText = String(text ?? "");
+    const messageText = String(text ?? "").replace(/\[\[product:\s*\d+\s*\]\]/gi, "");
 
     if (role === "bot" && typeof marked !== "undefined" &&
         typeof DOMPurify !== "undefined") {
@@ -42,6 +54,38 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     } else {
       content.textContent = messageText;
+    }
+
+    if (role === "bot" && recommendedProducts.length) {
+      const cards = document.createElement("div");
+      cards.className = "chat-product-cards";
+      cards.setAttribute("aria-label", "Recommended products");
+      recommendedProducts.forEach(product => {
+        const card = document.createElement("a");
+        card.className = "chat-product-card";
+        card.href = `product_detail.html?id=${encodeURIComponent(product.id)}`;
+        const image = document.createElement("img");
+        image.alt = product.name || "Skincare product";
+        image.loading = "lazy";
+        image.width = 64;
+        image.height = 76;
+        const fallback = "/frontend/images/product-placeholder.svg";
+        try {
+          const url = new URL(product.image || fallback, window.location.href);
+          image.src = ["http:", "https:"].includes(url.protocol) ? url.href : fallback;
+        } catch { image.src = fallback; }
+        image.onerror = () => { image.onerror = null; image.src = fallback; };
+        const details = document.createElement("span");
+        const name = document.createElement("strong");
+        name.textContent = product.name;
+        const action = document.createElement("span");
+        action.className = "chat-product-action";
+        action.textContent = "View product →";
+        details.append(name, action);
+        card.append(image, details);
+        cards.appendChild(card);
+      });
+      content.appendChild(cards);
     }
 
     message.append(avatar, content);
@@ -71,7 +115,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         throw new Error("Invalid AI response");
       }
 
-      addMessage(data.reply, "bot");
+      const catalog = await catalogPromise;
+      const recommendedIds = new Set(
+        [...data.reply.matchAll(/\[\[product:\s*(\d+)\s*\]\]/gi)].map(match => String(Number(match[1])))
+      );
+      const recommendedProducts = catalog.filter(product => recommendedIds.has(String(product.id)));
+      addMessage(data.reply, "bot", recommendedProducts);
       conversationHistory.push(
         { role: "user", content: text },
         { role: "assistant", content: data.reply }
@@ -127,10 +176,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const productId = new URLSearchParams(window.location.search).get("product");
   try {
-    const response = await fetch("/api/products");
-    if (!response.ok) throw new Error("Catalog unavailable");
-    const data = await response.json();
-    const catalog = Array.isArray(data) ? data : data.products;
+    const catalog = await catalogPromise;
     const sidebar = document.querySelector(".chat-sidebar") || document.querySelector("aside");
     if (sidebar && Array.isArray(catalog)) {
       const panel = document.createElement("div");
@@ -150,7 +196,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         const name = document.createElement("span"); name.textContent = item.name;
         link.appendChild(name); panel.appendChild(link);
       });
-      sidebar.prepend(panel);
+      const suggestions = document.getElementById("chatSuggestions");
+      if (suggestions) suggestions.after(panel);
+      else sidebar.appendChild(panel);
     }
     if (!productId) return;
     const product = catalog.find(item => String(item.id) === productId);
