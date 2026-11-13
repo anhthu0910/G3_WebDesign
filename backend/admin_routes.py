@@ -350,7 +350,7 @@ def update_quiz(question_id: int, payload: QuizPayload, admin_user: dict = Depen
     with get_connection() as conn:
         if conn.execute("UPDATE quiz_questions SET question_order=?,title=?,description=?,answers_json=?,published=?,version=version+1,updated_at=CURRENT_TIMESTAMP WHERE id=?", (payload.question_order, payload.title, payload.description, json.dumps(payload.answers, ensure_ascii=False), int(payload.published), question_id)).rowcount == 0:
             raise HTTPException(status_code=404, detail="Quiz question not found")
-            write_audit(admin_user, "update", "quiz_question", question_id)
+    write_audit(admin_user, "update", "quiz_question", question_id)
     return {"id": question_id, **payload.model_dump()}
 
 
@@ -359,7 +359,7 @@ def delete_quiz(question_id: int, admin_user: dict = Depends(require_admin)):
     with get_connection() as conn:
         if conn.execute("DELETE FROM quiz_questions WHERE id=?", (question_id,)).rowcount == 0:
             raise HTTPException(status_code=404, detail="Quiz question not found")
-            write_audit(admin_user, "delete", "quiz_question", question_id)
+    write_audit(admin_user, "delete", "quiz_question", question_id)
     return {"status": "deleted"}
 
 
@@ -373,7 +373,7 @@ def get_content(_: dict = Depends(require_admin)):
 def update_content(key: str, payload: ContentPayload, admin_user: dict = Depends(require_admin)):
     with get_connection() as conn:
         conn.execute("INSERT INTO home_content(key,value) VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value,updated_at=CURRENT_TIMESTAMP", (key, payload.value))
-    write_audit(admin_user, "update", "home_content", key)    
+    write_audit(admin_user, "update", "home_content", key)
     return {"key": key, "value": payload.value}
 
 
