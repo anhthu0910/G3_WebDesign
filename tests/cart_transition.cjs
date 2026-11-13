@@ -31,7 +31,7 @@ async function open(storage, user = null, options = {}) {
     await nodes.loginForm.submit({ preventDefault() { } });
     assert.equal(login.window.location.href, '/frontend/html/index.html');
     const source = fs.readFileSync('frontend/js/skin_quiz.js', 'utf8');
-    const score = source.slice(source.indexOf('  function calculateResult()'), source.indexOf('  function showResult()'));
+    const score = source.slice(source.indexOf('  function calculateResult()'), source.indexOf('  function showResult('));
     for (const type of ['dry', 'normal', 'oily', 'combination', 'sensitive']) {
         const c = vm.createContext({ questions: [{ answers: [{ type }] }], selectedAnswers: [0] }); vm.runInContext(score, c); assert.equal(c.calculateResult().skinType, type);
     }
