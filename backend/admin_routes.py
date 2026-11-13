@@ -239,7 +239,7 @@ async def upload_product_image(product_id: int, file: UploadFile = File(...), ad
 @router.get("/analytics")
 def analytics(_: dict = Depends(require_admin)):
     with get_connection() as conn:
-        return {"products": conn.execute("SELECT COUNT(*) FROM products").fetchone()[0], "users": conn.execute("SELECT COUNT(*) FROM users WHERE role='user'").fetchone()[0], "affiliate_clicks": conn.execute("SELECT COUNT(*) FROM affiliate_clicks").fetchone()[0], "quiz_submissions": 0, "missing_images": conn.execute("SELECT COUNT(*) FROM products WHERE image IS NULL OR image='' ").fetchone()[0]}
+        return {"products": conn.execute("SELECT COUNT(*) FROM products").fetchone()[0], "users": conn.execute("SELECT COUNT(*) FROM users WHERE role='user'").fetchone()[0], "affiliate_clicks": conn.execute("SELECT COUNT(*) FROM affiliate_clicks").fetchone()[0], "quiz_submissions": conn.execute("SELECT COUNT(*) FROM quiz_completions").fetchone()[0], "missing_images": conn.execute("SELECT COUNT(*) FROM products WHERE image IS NULL OR image='' ").fetchone()[0]}
 
 
 @router.get("/overview")
@@ -315,7 +315,7 @@ def overview(_: dict = Depends(require_admin)):
             "products_by_category": products_by_category,
         }
         return {
-            "cards": {"products": len(products), "users": users, "quiz_completions": None, "ai_requests": ai_requests, "affiliate_clicks": affiliate_clicks},
+            "cards": {"products": len(products), "users": users, "quiz_completions": conn.execute("SELECT COUNT(*) FROM quiz_completions").fetchone()[0], "ai_requests": ai_requests, "affiliate_clicks": affiliate_clicks},
             "charts": charts,
             "alerts": alerts,
             "status": {"fastapi": "online", "sqlite": "online", "gemini": "configured" if os.getenv("GEMINI_API_KEY") else "not configured", "skin_quiz": "published" if quiz_published else "not published"},

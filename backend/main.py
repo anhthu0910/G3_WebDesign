@@ -8,6 +8,7 @@ import os
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from typing import Literal
+from uuid import UUID
 from google.genai.errors import ServerError
 from backend.auth_routes import router as auth_router, admin_router, COOKIE_NAME
 from backend.services.auth_service import get_session_user
@@ -147,6 +148,17 @@ def public_quiz():
     with get_connection() as conn:
         rows = conn.execute("SELECT id, question_order, title, description, answers_json, version FROM quiz_questions WHERE published=1 ORDER BY question_order, id").fetchall()
     return {"questions": [{"id": row["id"], "order": row["question_order"], "title": row["title"], "description": row["description"], "answers": json.loads(row["answers_json"]), "version": row["version"]} for row in rows]}
+
+
+class QuizCompletion(BaseModel):
+    completion_id: UUID
+
+
+@app.post("/api/quiz/completions")
+def record_quiz_completion(payload: QuizCompletion):
+    with get_connection() as conn:
+        conn.execute("INSERT OR IGNORE INTO quiz_completions(completion_id) VALUES (?)", (str(payload.completion_id),))
+    return {"status": "recorded"}
 
 
 @app.post("/api/products/{product_id}/affiliate-click")

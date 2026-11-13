@@ -128,6 +128,16 @@ def init_database():
             )
         """)
 
+        migrate_quiz_results = conn.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='quiz_completions'").fetchone() is None
+        conn.execute("""CREATE TABLE IF NOT EXISTS quiz_completions (
+            completion_id TEXT PRIMARY KEY,
+            created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+        )""")
+        # Recover one known completion for accounts with pre-existing saved results.
+        if migrate_quiz_results:
+            conn.execute("""INSERT OR IGNORE INTO quiz_completions(completion_id)
+                SELECT 'legacy-user-' || user_id FROM user_profiles WHERE quiz_result IS NOT NULL""")
+
         user_columns = {row[1] for row in conn.execute("PRAGMA table_info(users)").fetchall()}
         if "locked" not in user_columns:
             conn.execute("ALTER TABLE users ADD COLUMN locked INTEGER NOT NULL DEFAULT 0")
