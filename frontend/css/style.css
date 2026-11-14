@@ -923,3 +923,22 @@ h3 {
   outline: 3px solid var(--pink);
   outline-offset: 3px;
 }
+
+/* Shopee logo inside Home Buy Now button */
+.home-buy-logo {
+  display: inline-block;
+  width: 19px;
+  height: 19px;
+  max-width: 19px;
+  max-height: 19px;
+  object-fit: contain;
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+
+.home-purchase-actions .home-buy-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+}
