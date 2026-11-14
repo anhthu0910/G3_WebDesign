@@ -13,7 +13,7 @@ Beyond simply displaying product information, the website acts as a "virtual der
 ---
 
 ## ✨ Website Objectives
-SkinMatch is designed to address common difficulties users face when choosing skincare products:
+GlowGuide is designed to address common difficulties users face when choosing skincare products:
 - Users may not know whether a product is suitable for their skin type.
 - Product ingredient lists and their practical benefits can be difficult to understand.
 - Many products appear similar but differ in price, brand, formulation, and usage experience.
