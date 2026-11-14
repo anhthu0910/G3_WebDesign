@@ -92,6 +92,8 @@ Trong terminal khác, kích hoạt lại `.venv` rồi chạy `python -m unittes
 
 Các trang, API sản phẩm và bộ kiểm thử chạy được mà không cần Gemini API key. Để dùng AI thật, sao chép `.env.example` thành `.env`, điền `GEMINI_API_KEY` cùng các model ID Gemini khả dụng vào `GEMINI_MODELS`, rồi khởi động lại server. Không chia sẻ hoặc commit `.env`. Nếu chưa cấu hình key, riêng chức năng AI sẽ không hoạt động.
 
+Nếu khung chat báo lỗi, đọc nội dung lỗi để biết cần kiểm tra kết nối máy chủ, quyền/key Gemini, model trong `GEMINI_MODELS` hay quota. Khi chạy local, xem thêm log ở cửa sổ đang chạy Uvicorn. Không gửi API key trong ảnh chụp màn hình hoặc tin nhắn hỗ trợ.
+
 ### Nếu không mở được website
 
 - Đảm bảo terminal đang ở thư mục gốc dự án và môi trường `(.venv)` đã được kích hoạt.

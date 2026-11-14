@@ -9,14 +9,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from typing import Literal
 from uuid import UUID
-from google.genai.errors import ServerError
+from google.genai.errors import APIError, ServerError
 from backend.auth_routes import router as auth_router, admin_router, COOKIE_NAME
 from backend.services.auth_service import get_session_user
 from backend.admin_routes import router as admin_management_router
 from backend.user_routes import router as user_router
 from backend.database import init_database
 
-from backend.services.ai_service import generate_skincare_reply
+from backend.services.ai_service import AIConfigurationError, generate_skincare_reply
 from backend.services.product_service import (
     get_all_products,
     get_product_by_id
@@ -101,6 +101,14 @@ def chat(request: ChatRequest):
             "status": "success"
         }
 
+    except AIConfigurationError:
+        with get_connection() as conn:
+            conn.execute("UPDATE ai_usage_logs SET status='failed' WHERE id=?", (log_id,))
+        raise HTTPException(
+            status_code=503,
+            detail="AI is not configured. Set GEMINI_API_KEY in .env or the hosting environment, then restart the server."
+        )
+
     except ServerError:
         with get_connection() as conn:
             conn.execute("UPDATE ai_usage_logs SET status='failed' WHERE id=?", (log_id,))
@@ -111,6 +119,21 @@ def chat(request: ChatRequest):
             status_code=503,
             detail="Gemini is currently busy. Please try again shortly."
         )
+
+    except APIError as error:
+        with get_connection() as conn:
+            conn.execute("UPDATE ai_usage_logs SET status='failed' WHERE id=?", (log_id,))
+        import logging
+        logging.warning("Gemini request rejected: HTTP %s", error.code)
+        if error.code in (400, 401, 403):
+            detail = "Gemini rejected the API key or model access. Check GEMINI_API_KEY and this project's Gemini API permissions."
+        elif error.code == 404:
+            detail = "The configured Gemini model is unavailable. Check the model IDs in GEMINI_MODELS."
+        elif error.code == 429:
+            detail = "Gemini quota or rate limit reached. Try again later or check your Google AI Studio quota."
+        else:
+            detail = "Gemini could not process the request. Check the server logs and Gemini configuration."
+        raise HTTPException(status_code=503, detail=detail)
 
     except Exception:
         with get_connection() as conn:

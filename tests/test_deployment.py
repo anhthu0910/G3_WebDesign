@@ -27,6 +27,7 @@ os.environ.update(APP_ENV="production", DATABASE_PATH=str(TEST_DIR / "test.db"),
                   UPLOAD_DIR=str(TEST_DIR / "uploads"), GEMINI_API_KEY="")
 
 from fastapi.testclient import TestClient
+import backend.main as main
 from backend.main import app
 from backend.database import get_connection
 from backend.services.password_service import hash_password
@@ -117,7 +118,23 @@ class DeploymentTests(unittest.TestCase):
             self.assertEqual(response.json()["reply"], "Test reply")
             self.assertEqual(fake.models.generate_content.call_count, 2)
         with patch.object(ai_service, "client", None):
-            self.assertEqual(self.client.post("/api/chat", json={"message": "Dry skin?"}).status_code, 503)
+            response = self.client.post("/api/chat", json={"message": "Dry skin?"})
+        self.assertEqual(response.status_code, 503)
+        self.assertIn("GEMINI_API_KEY", response.json()["detail"])
+
+    def test_ai_provider_errors_are_actionable(self):
+        expected_hints = {
+            401: "API key",
+            404: "model",
+            429: "quota",
+        }
+        for status, hint in expected_hints.items():
+            with self.subTest(status=status):
+                error = APIError(status, {"error": {"message": "provider error"}})
+                with patch.object(main, "generate_skincare_reply", side_effect=error):
+                    response = self.client.post("/api/chat", json={"message": "Hello"})
+                self.assertEqual(response.status_code, 503)
+                self.assertIn(hint.lower(), response.json()["detail"].lower())
 
     def test_ai_timeout_falls_back_without_sdk_retries(self):
         from httpx import ReadTimeout

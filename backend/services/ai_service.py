@@ -30,6 +30,11 @@ REQUEST_TIMEOUT_MS = 12000
 MIN_REQUEST_TIMEOUT_MS = 10000
 TOTAL_TIMEOUT_SECONDS = 25
 
+
+class AIConfigurationError(RuntimeError):
+    pass
+
+
 SYSTEM_INSTRUCTION = """
 You are GlowGuide, an educational AI skincare consultant.
 
@@ -87,7 +92,7 @@ You are not a dermatologist and do not replace medical care.
 
 def generate_skincare_reply(message: str, history: list) -> str:
     if client is None:
-        raise RuntimeError("GEMINI_API_KEY is not configured")
+        raise AIConfigurationError("GEMINI_API_KEY is not configured")
     deadline = monotonic() + TOTAL_TIMEOUT_SECONDS
 
     contents = []
