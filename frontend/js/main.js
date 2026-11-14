@@ -14,7 +14,18 @@ function getPurchaseUrl(product) {
 function createPurchaseLink(product, className) {
   const link = document.createElement("a");
   link.className = className;
-  link.textContent = "Buy Now";
+  // Shopee logo
+  const shopeeLogo = document.createElement("img");
+  shopeeLogo.src = "../images/shopee-logo.png";
+  shopeeLogo.alt = "";
+  shopeeLogo.className = "home-buy-logo";
+  shopeeLogo.setAttribute("aria-hidden", "true");
+
+  // Button text
+  const buyText = document.createElement("span");
+  buyText.textContent = "Buy Now";
+  link.append(shopeeLogo, buyText);
+
   const purchase = getPurchaseUrl(product);
   if (purchase) {
     link.href = purchase.href;
@@ -88,6 +99,24 @@ document.addEventListener("DOMContentLoaded", () => {
 document.addEventListener("DOMContentLoaded", async () => {
   const container = document.querySelector(".featured-products .product-list");
   if (!container) return;
+  
+  // Add Shopee logo to static HTML buttons (API fallback)
+  container.querySelectorAll(".home-buy-link").forEach(link => {
+    // Avoid adding the logo more than once
+    if (link.querySelector(".home-buy-logo")) return;
+
+    const logo = document.createElement("img");
+    logo.src = "../images/shopee-logo.png";
+    logo.alt = "";
+    logo.className = "home-buy-logo";
+    logo.setAttribute("aria-hidden", "true");
+
+    const text = document.createElement("span");
+    text.textContent = "Buy Now";
+
+    link.replaceChildren(logo, text);
+  });
+
 
   function updateHomeCartButtons() {
     const ids = new Set(getCart().map(item => String(item.id)));
