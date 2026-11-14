@@ -239,7 +239,7 @@ async def upload_product_image(product_id: int, file: UploadFile = File(...), ad
 @router.get("/analytics")
 def analytics(_: dict = Depends(require_admin)):
     with get_connection() as conn:
-        return {"products": conn.execute("SELECT COUNT(*) FROM products").fetchone()[0], "users": conn.execute("SELECT COUNT(*) FROM users WHERE role='user'").fetchone()[0], "affiliate_clicks": conn.execute("SELECT COUNT(*) FROM affiliate_clicks").fetchone()[0], "quiz_submissions": 0, "missing_images": conn.execute("SELECT COUNT(*) FROM products WHERE image IS NULL OR image='' ").fetchone()[0]}
+        return {"products": conn.execute("SELECT COUNT(*) FROM products").fetchone()[0], "users": conn.execute("SELECT COUNT(*) FROM users WHERE role='user'").fetchone()[0], "affiliate_clicks": conn.execute("SELECT COUNT(*) FROM affiliate_clicks").fetchone()[0], "quiz_submissions": conn.execute("SELECT COUNT(*) FROM quiz_completions").fetchone()[0], "missing_images": conn.execute("SELECT COUNT(*) FROM products WHERE image IS NULL OR image='' ").fetchone()[0]}
 
 
 @router.get("/overview")
@@ -315,7 +315,7 @@ def overview(_: dict = Depends(require_admin)):
             "products_by_category": products_by_category,
         }
         return {
-            "cards": {"products": len(products), "users": users, "quiz_completions": None, "ai_requests": ai_requests, "affiliate_clicks": affiliate_clicks},
+            "cards": {"products": len(products), "users": users, "quiz_completions": conn.execute("SELECT COUNT(*) FROM quiz_completions").fetchone()[0], "ai_requests": ai_requests, "affiliate_clicks": affiliate_clicks},
             "charts": charts,
             "alerts": alerts,
             "status": {"fastapi": "online", "sqlite": "online", "gemini": "configured" if os.getenv("GEMINI_API_KEY") else "not configured", "skin_quiz": "published" if quiz_published else "not published"},
@@ -337,25 +337,29 @@ def admin_quiz(_: dict = Depends(require_admin)):
 
 
 @router.post("/quiz", status_code=201)
-def create_quiz(payload: QuizPayload, _: dict = Depends(require_admin)):
+def create_quiz(payload: QuizPayload, admin_user: dict = Depends(require_admin)):
     with get_connection() as conn:
         cur = conn.execute("INSERT INTO quiz_questions (question_order,title,description,answers_json,published) VALUES (?,?,?,?,?)", (payload.question_order, payload.title, payload.description, json.dumps(payload.answers, ensure_ascii=False), int(payload.published)))
-        return {"id": cur.lastrowid, **payload.model_dump()}
+        question_id = cur.lastrowid
+    write_audit(admin_user, "create", "quiz_question", question_id)
+    return {"id": question_id, **payload.model_dump()}
 
 
 @router.put("/quiz/{question_id}")
-def update_quiz(question_id: int, payload: QuizPayload, _: dict = Depends(require_admin)):
+def update_quiz(question_id: int, payload: QuizPayload, admin_user: dict = Depends(require_admin)):
     with get_connection() as conn:
         if conn.execute("UPDATE quiz_questions SET question_order=?,title=?,description=?,answers_json=?,published=?,version=version+1,updated_at=CURRENT_TIMESTAMP WHERE id=?", (payload.question_order, payload.title, payload.description, json.dumps(payload.answers, ensure_ascii=False), int(payload.published), question_id)).rowcount == 0:
             raise HTTPException(status_code=404, detail="Quiz question not found")
+    write_audit(admin_user, "update", "quiz_question", question_id)
     return {"id": question_id, **payload.model_dump()}
 
 
 @router.delete("/quiz/{question_id}")
-def delete_quiz(question_id: int, _: dict = Depends(require_admin)):
+def delete_quiz(question_id: int, admin_user: dict = Depends(require_admin)):
     with get_connection() as conn:
         if conn.execute("DELETE FROM quiz_questions WHERE id=?", (question_id,)).rowcount == 0:
             raise HTTPException(status_code=404, detail="Quiz question not found")
+    write_audit(admin_user, "delete", "quiz_question", question_id)
     return {"status": "deleted"}
 
 
@@ -366,9 +370,10 @@ def get_content(_: dict = Depends(require_admin)):
 
 
 @router.put("/content/{key}")
-def update_content(key: str, payload: ContentPayload, _: dict = Depends(require_admin)):
+def update_content(key: str, payload: ContentPayload, admin_user: dict = Depends(require_admin)):
     with get_connection() as conn:
         conn.execute("INSERT INTO home_content(key,value) VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value,updated_at=CURRENT_TIMESTAMP", (key, payload.value))
+    write_audit(admin_user, "update", "home_content", key)
     return {"key": key, "value": payload.value}
 
 

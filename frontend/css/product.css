@@ -676,7 +676,7 @@
   border: none;
   border-radius: 10px;
 
-  background: #b97c91;
+  background: #d98e9e;
   color: #ffffff;
 
   font-family: inherit;
@@ -688,7 +688,7 @@
 }
 
 .product-cart-btn:hover {
-  background: #a6647c;
+  background: #bf7588;
 }
 
 .product-cart-btn.added {
@@ -857,4 +857,31 @@
 
 .product-editor-preview[hidden] {
   display: none;
+}
+
+.product-buttons {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr) 44px;
+  align-items: center;
+  gap: 8px;
+}
+.product-buttons a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  min-height: 44px;
+  padding: 10px 6px;
+  border-radius: 14px;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+.product-buttons .buy-btn { border: 1.5px solid #b36e80; }
+.product-buttons .product-cart-btn {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  margin: 0;
+  padding: 10px;
+  border-radius: 14px;
 }

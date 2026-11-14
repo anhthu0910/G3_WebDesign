@@ -9,7 +9,7 @@
   <title>AI Skincare Consultant | GlowGuide</title>
 
   <link rel="stylesheet" href="../css/style.css">
-  <link rel="stylesheet" href="../css/chatbot.css">
+  <link rel="stylesheet" href="../css/chatbot.css?v=20261113-chat-products">
   <link rel="stylesheet" href="../css/auth.css">
   <script src="../js/auth.js" defer></script>
 
@@ -23,7 +23,7 @@
   <script src="../js/main.js" defer></script>
   <script src="../js/product_data.js" defer></script>
   <script src="../js/api.js" defer></script>
-  <script src="../js/chatbot.js?v=20261111-safe-cleanup" defer></script>
+  <script src="../js/chatbot.js?v=20261113-chat-products" defer></script>
 
 </head>
 <body>
@@ -55,16 +55,7 @@
     <section class="chat-layout">
 
       <aside class="chat-sidebar">
-        <div class="sidebar-card">
-          <div class="sidebar-icon">🌸</div>
-          <h2>Hello, beautiful skin!</h2>
-          <p>
-            Learn about skincare and explore
-            options that match your skin concerns.
-          </p>
-        </div>
-
-        <div class="sidebar-card">
+        <div class="sidebar-card" id="chatSuggestions">
           <h3>Try asking</h3>
 
           <button class="suggestion"

@@ -339,10 +339,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   // SHOW RESULT
   // ==========================================
 
-  function showResult() {
+  function showResult(restoredResult = null) {
     quizInProgress = false;
 
-    const result = calculateResult();
+    const result = restoredResult || calculateResult();
 
     questionBox.hidden = true;
     navigation.hidden = true;
@@ -410,7 +410,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       actions
     );
 
-    const savedProfile = { skinType: result.skinType, concern: result.concern, inconclusive: result.inconclusive };
+    const savedProfile = { completionId: restoredResult ? restoredResult.completionId : crypto.randomUUID(), skinType: result.skinType, concern: result.concern, inconclusive: result.inconclusive };
     try {
       localStorage.setItem(
         currentUser?.role === "user" ? `glowguide_skin_profile:user:${currentUser.id}` : "glowguide_skin_profile",
@@ -419,7 +419,31 @@ document.addEventListener("DOMContentLoaded", async () => {
     } catch (error) {
       console.warn("Skin profile could not be saved:", error);
     }
-    if (currentUser?.role === "user") {
+    if (savedProfile.completionId) {
+      const trackingStatus = document.createElement("p");
+      trackingStatus.setAttribute("role", "status");
+      const retryTracking = document.createElement("button");
+      retryTracking.type = "button"; retryTracking.textContent = "Retry recording completion";
+      retryTracking.hidden = true;
+      async function recordCompletion() {
+        retryTracking.disabled = true;
+        try {
+          const response = await fetch("/api/quiz/completions", {
+            method: "POST", headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ completion_id: savedProfile.completionId })
+          });
+          if (!response.ok) throw new Error("Completion not recorded");
+          trackingStatus.textContent = ""; retryTracking.hidden = true;
+        } catch {
+          trackingStatus.textContent = "Your result is visible, but the completion could not be recorded.";
+          retryTracking.hidden = false;
+        } finally { retryTracking.disabled = false; }
+      }
+      retryTracking.onclick = recordCompletion;
+      resultBox.append(trackingStatus, retryTracking);
+      recordCompletion();
+    }
+    if (currentUser?.role === "user" && !restoredResult) {
       const status = document.createElement("p");
       status.setAttribute("role", "status");
       const retry = document.createElement("button");
@@ -429,7 +453,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       async function saveResult() {
         retry.hidden = true;status.textContent = "Saving result...";
         try {
-          await authRequest("/api/user/profile", { method: "PUT", body: JSON.stringify({ quiz_result: savedProfile }) });
+          await authRequest("/api/user/profile", { method: "PUT", body: JSON.stringify({ quiz_result: { skinType: savedProfile.skinType, concern: savedProfile.concern, inconclusive: savedProfile.inconclusive } }) });
           status.textContent = "Result saved to your account.";
         } catch { status.textContent = "Could not save. Your result remains visible; sign in again if your session expired, then retry.";retry.hidden = false; }
       }
@@ -497,6 +521,23 @@ document.addEventListener("DOMContentLoaded", async () => {
   // ==========================================
   // WARN BEFORE LEAVING QUIZ
   // ==========================================
+
+  try {
+    const key = currentUser?.role === "user" ? `glowguide_skin_profile:user:${currentUser.id}` : "glowguide_skin_profile";
+    let saved = JSON.parse(localStorage.getItem(key) || "null");
+    if (currentUser?.role === "user") {
+      try {
+        const remote = (await authRequest("/api/user/profile")).quiz_result;
+        if (remote && (!saved || remote.skinType !== saved.skinType || remote.concern !== saved.concern || remote.inconclusive !== saved.inconclusive)) saved = remote;
+      }
+      catch (error) { console.warn("Using locally saved quiz result:", error); }
+    }
+    if (saved && typeof saved.inconclusive === "boolean" && (saved.skinType === null || Object.hasOwn(skinLabels, saved.skinType))) {
+      welcomeScreen.hidden = true;
+      quizContent.hidden = false;
+      showResult(saved);
+    }
+  } catch (error) { console.warn("Could not restore quiz result:", error); }
 
   // Browser warning when refreshing or closing the tab.
   window.addEventListener("beforeunload", event => {

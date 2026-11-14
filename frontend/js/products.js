@@ -116,7 +116,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     detailLink.className = "details-btn";
     detailLink.href =
       `product_detail.html?id=${encodeURIComponent(product.id)}`;
-    detailLink.textContent = "View Details";
+    detailLink.textContent = "View";
 
     const buyLink = createPurchaseLink(product, "buy-btn");
     buttons.append(detailLink, buyLink);
@@ -131,9 +131,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       const isAdded = getCart().some(
         item => String(item.id) === String(product.id)
       );
-      cartButton.textContent = isAdded
-        ? "Added to Cart"
-        : "Add to Cart";
+      cartButton.innerHTML = `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2 3h3l3 12h11l3-9H6"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>`;
+      cartButton.setAttribute("aria-label", isAdded ? "Remove from cart" : "Add to cart");
+      cartButton.title = isAdded ? "Remove from cart" : "Add to cart";
+      cartButton.setAttribute("aria-pressed", String(isAdded));
       cartButton.classList.toggle("added", isAdded);
     }
 
@@ -150,7 +151,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     cartButtonUpdates.push(updateCartButtonState);
     updateCartButtonState();
-    card.appendChild(cartButton);
+    buttons.appendChild(cartButton);
 
     if (isAdmin) {
       const adminActions = document.createElement("div");

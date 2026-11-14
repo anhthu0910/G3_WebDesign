@@ -721,9 +721,9 @@ h3 {
   width: calc(100% - 28px);
   margin: 12px 14px 16px;
   padding: 12px 15px;
-  border: 1px solid #b97c91;
+  border: 1px solid #d98e9e;
   border-radius: 10px;
-  background: #b97c91;
+  background: #d98e9e;
   color: white;
   font: inherit;
   font-size: 13px;
@@ -733,7 +733,7 @@ h3 {
 }
 
 .home-cart-btn:hover {
-  background: #a6647c;
+  background: #bf7588;
 }
 
 .home-cart-btn.added {
@@ -855,17 +855,71 @@ h3 {
   display: none;
 }
 
-/* Shopee logo inside Home Buy Now button */
+
+/* Search action stays inside the field and remains visible. */
+.hero .search-box { position: relative; display: flex; border: 2px solid #ac4d69; border-radius: 30px; background: white; padding: 4px; }
+.hero .search-box input { flex: 1; min-width: 0; border: 0; background: transparent; padding-right: 60px; }
+.hero .search-box #homeSearchButton { position: absolute; right: 6px; top: 6px; bottom: 6px; width: 46px; padding: 0; display: grid; place-items: center; border-radius: 50%; background: #9d3f5e; color: white; }
+.home-purchase-actions { display: flex; align-items: center; gap: 10px; margin-top: 12px; }
+.home-purchase-actions .home-buy-link { flex: 1; margin: 0; }
+.home-purchase-actions .home-cart-btn, .product-buttons .product-cart-btn, .detail-actions #cartButton { width: 46px; min-width: 46px; height: 46px; flex: 0 0 46px; padding: 10px; margin: 0; display: inline-flex; align-items: center; justify-content: center; }
+.detail-actions #buyProduct { order: 1; }
+.detail-actions #cartButton { order: 2; }
+.detail-actions #askAI { order: 3; }
+
+/* Product actions follow the reference silhouette using the existing palette. */
+.featured-products .product-card {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
+  align-items: center;
+}
+.featured-products .product-card > a:not(.home-buy-link),
 .home-purchase-actions .home-buy-link {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 7px;
+  min-height: 44px;
+  padding: 10px 8px;
+  border-radius: 14px;
+  font-size: clamp(11px, 1vw, 14px);
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
 }
-
-.home-buy-logo {
-  width: 19px;
-  height: 19px;
-  object-fit: contain;
-  flex-shrink: 0;
+.featured-products .product-card > .home-purchase-actions {
+  grid-column: 2;
+  gap: 8px;
+  margin: 0;
+  min-width: 0;
+}
+.home-purchase-actions .home-buy-link {
+  min-width: 0;
+  border: 1.5px solid #a7607a;
+}
+.home-purchase-actions .home-cart-btn,
+.product-buttons .product-cart-btn,
+.detail-actions #cartButton {
+  width: 44px;
+  min-width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  border-radius: 14px;
+}
+.detail-actions #cartButton {
+  width: 52px;
+  min-width: 52px;
+  height: 52px;
+  flex-basis: 52px;
+}
+.home-purchase-actions .home-cart-btn svg,
+.product-buttons .product-cart-btn svg,
+.detail-actions #cartButton svg {
+  width: 24px;
+  height: 24px;
+}
+.home-purchase-actions > :focus-visible,
+.product-buttons > :focus-visible {
+  outline: 3px solid var(--pink);
+  outline-offset: 3px;
 }

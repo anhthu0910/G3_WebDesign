@@ -309,6 +309,24 @@
   border-color: #b96b84;
 }
 
+.detail-actions #cartButton.added {
+  width: auto;
+  min-width: 52px;
+  height: 52px;
+  flex: 0 0 auto;
+  gap: 8px;
+  padding: 10px 14px;
+  background: #fff0f4;
+  color: #aa6179;
+  border-color: #d9a5b5;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.detail-actions #cartButton.added:hover {
+  background: #fbe1e9;
+}
+
 .add-to-cart-btn {
   background: #b97c91;
   border: 1px solid #b97c91;
@@ -329,3 +347,6 @@
   vertical-align: middle;
   margin-right: 6px;
 }
+/* Use the same corner radius for all product action buttons. */
+.detail-actions .detail-button { border-radius: 14px; }
+.detail-actions #cartButton { border-radius: 14px; }

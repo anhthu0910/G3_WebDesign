@@ -231,7 +231,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const detailLink = createElement(
       "a",
       "cart-details",
-      "View Details"
+      "View"
     );
 
     detailLink.href = imageLink.href;

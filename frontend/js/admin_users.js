@@ -6,7 +6,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const loginLink = document.getElementById("adminLoginLink");
   const search = document.getElementById("userSearch");
   const filter = document.getElementById("userStatusFilter");
-  const refresh = document.getElementById("refreshUsers");
   let users = [];
   let busy = false;
 
@@ -47,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function load() {
     if (busy) return;
-    busy = true;refresh.disabled = true;management.hidden = true;loginLink.hidden = true;
+    busy = true;management.hidden = true;loginLink.hidden = true;
     status.textContent = "Loading users...";
     try {
       const data = await authRequest("/api/admin/users");
@@ -57,21 +56,21 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (error) {
       users = [];
       status.textContent = error.message;loginLink.hidden = false;
-    } finally { busy = false;refresh.disabled = false;render(); }
+    } finally { busy = false;render(); }
   }
 
   async function toggleLock(user) {
     if (busy) return;
-    busy = true;refresh.disabled = true;render();
+    busy = true;render();
     status.textContent = user.locked ? "Unlocking account..." : "Locking account...";
     try {
       const result = await authRequest(`/api/admin/users/${encodeURIComponent(user.id)}/lock?locked=${!user.locked}`, { method: "PATCH" });
       user.locked = result.locked;
       status.textContent = result.locked ? "Account locked." : "Account unlocked.";
     } catch (error) { status.textContent = error.message; }
-    finally { busy = false;refresh.disabled = false;render(); }
+    finally { busy = false;render(); }
   }
 
   search.addEventListener("input", render);filter.addEventListener("change", render);
-  refresh.addEventListener("click", load);load();
+  load();
 });
